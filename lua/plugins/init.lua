@@ -22,7 +22,7 @@ return {
   		ensure_installed = {
   			"lua-language-server", "stylua",
   			"html-lsp", "css-lsp" , "prettier",
-        "haskell-language-server"
+        "haskell-language-server", "jdtls"
   		},
   	},
   },
@@ -33,7 +33,7 @@ return {
   		ensure_installed = {
   			"vim", "lua", "vimdoc",
        "html", "css", "haskell",
-        "python"
+        "python", "java"
   		},
   	},
   },
