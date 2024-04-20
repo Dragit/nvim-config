@@ -37,4 +37,13 @@ return {
   		},
   	},
   },
+
+  -- nvim lint installation
+  {
+    "mfussenegger/nvim-lint",
+    event = "VeryLazy",
+    config = function()
+      require "configs.lint"
+    end,
+  },
 }
