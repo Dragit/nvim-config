@@ -3,7 +3,7 @@ require("lint").linter_by_ft = {
   yaml = { "yamllint"},
 }
 
-vim.api.nvim_create_autocmd({ "BufWritePost" }, {
+vim.api.nvim_create_autocmd({ "InsertLeave", "BufWritePost" }, {
   callback = function ()
     require("lint").try_lint()
   end,
