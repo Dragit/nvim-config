@@ -27,6 +27,8 @@ require("lazy").setup({
 
   { import = "plugins" },
 }, lazy_config)
+-- set standard vim colours
+vim.cmd 'colorscheme vim'
 
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
