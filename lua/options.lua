@@ -4,4 +4,5 @@ require "nvchad.options"
 
 local o = vim.o
 o.cursorlineopt ='both' -- to enable cursorline!
-o.linebreak = true
+-- o.linebreak = true -- handlead in custom
+-- o.colorcolumn = "80" -- create line at position 80 --handled in custom

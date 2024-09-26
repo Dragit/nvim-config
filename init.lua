@@ -27,8 +27,9 @@ require("lazy").setup({
 
   { import = "plugins" },
 }, lazy_config)
--- set standard vim colours
-vim.cmd 'colorscheme vim'
+
+-- set standard vim colours (von mir)
+-- vim.cmd 'colorscheme vim'
 
 -- load theme
 dofile(vim.g.base46_cache .. "defaults")
@@ -39,3 +40,5 @@ require "nvchad.autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+require('custom')  -- load my coustom files

@@ -23,8 +23,9 @@ return {
   			"lua-language-server", "stylua",
   			"html-lsp", "css-lsp" , "prettier",
         "haskell-language-server", "jdtls",
-        "vale", "markdownlint", "yamllint",
-        "marksman", "ltex-ls",
+        "yamllint", "marksman","ltex-ls",
+        "json-lsp", "eslint-lsp", "stylelint-lsp",
+       --  markdownlint
   		},
   	},
   },
@@ -35,17 +36,23 @@ return {
   		ensure_installed = {
   			"vim", "lua", "vimdoc",
        "html", "css", "haskell",
-        "python", "java", "markdown"
+        "python", "java", "markdown",
+        "javascript", "typescript",
   		},
   	},
   },
-
-  -- nvim lint installation
+  -- here I try to add a config for nvim-tree
   {
-    "mfussenegger/nvim-lint",
-    event = "VeryLazy",
-    config = function()
-      require "configs.lint"
+    "nvim-tree/nvim-tree.lua",
+    opts = function ()
+      local conf = require "nvchad.configs.nvimtree"
+
+      conf.filters = {
+        git_ignored = false,
+        dotfiles = false,
+      }
+      return conf
     end,
-  },
+  }
+
 }
