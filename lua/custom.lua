@@ -21,3 +21,8 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt.linebreak = true  -- Aktiviert Zeilenumbrüche
     end,
 })
+
+-- Key mapping to generate JSDoc comments
+vim.api.nvim_set_keymap('n', '<leader>jd', ':JsDoc<CR>', {
+    noremap = true, silent = true
+  })
