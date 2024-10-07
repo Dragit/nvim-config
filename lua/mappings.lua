@@ -11,3 +11,8 @@ map("i", "jk", "<ESC>")
 map("n", "<leader>lf", vim.diagnostic.open_float, { desc = "lsp floating diagnostics" })
 
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
+--
+
+-- inlay hints toggle
+vim.keymap.set("n", "<leader>ih",
+  function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled()) end)

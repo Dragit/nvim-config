@@ -26,3 +26,4 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_set_keymap('n', '<leader>jd', ':JsDoc<CR>', {
     noremap = true, silent = true
   })
+

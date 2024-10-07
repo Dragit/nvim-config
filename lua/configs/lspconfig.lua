@@ -7,12 +7,24 @@ local lspconfig = require "lspconfig"
 local servers = { "html", "cssls", "hls", "jdtls", "marksman", "ts_ls",
   "jsonls","eslint", "stylelint_lsp"} -- , "ltex"
 
+-- Custom on_attach function to enable inlay hints
+local custom_on_attach = function(client, bufnr)
+  -- Call the default on_attach from NvChad
+  on_attach(client, bufnr)
+
+  -- Enable inlay hints if the LSP supports them
+  if client.server_capabilities.inlayHintProvider then
+    vim.lsp.inlay_hint(bufnr, true)
+  end
+end
+
 -- lsps with default config
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    on_attach = on_attach,
+    on_attach = custom_on_attach,
     on_init = on_init,
     capabilities = capabilities,
+    -- Enable inlay hints
     -- single_file_support = false,
   }
 end
@@ -29,12 +41,37 @@ lspconfig["ltex"].setup {
     	},
 }
 
--- disable tssserver formattign
+-- disable tssserver formatting and enable inlay hints
 lspconfig["ts_ls"].setup {
     on_attach = function(client)
-      -- Disable ts_ls formatting if you're using a different formatter like prettier
+      -- Disable ts_ls formatting 
       client.server_capabilities.documentFormattingProvider = false
     end,
+    settings = {
+        javascript = {
+          inlayHints = {
+            includeInlayEnumMemberValueHints = true,
+            includeInlayFunctionLikeReturnTypeHints = true,
+            includeInlayFunctionParameterTypeHints = true,
+            includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+            includeInlayPropertyDeclarationTypeHints = true,
+            includeInlayVariableTypeHints = false,
+          },
+        },
+
+        typescript = {
+          inlayHints = {
+            includeInlayEnumMemberValueHints = true,
+            includeInlayFunctionLikeReturnTypeHints = true,
+            includeInlayFunctionParameterTypeHints = true,
+            includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+            includeInlayPropertyDeclarationTypeHints = true,
+            includeInlayVariableTypeHints = false,
+          },
+        },
+      },
 }
 
 --

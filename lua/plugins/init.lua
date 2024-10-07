@@ -25,6 +25,7 @@ return {
         "haskell-language-server", "jdtls",
         "yamllint", "marksman","ltex-ls",
         "json-lsp", "eslint-lsp", "stylelint-lsp",
+        "typescript-language-server",
        --  markdownlint
   		},
   	},
@@ -37,7 +38,7 @@ return {
   			"vim", "lua", "vimdoc",
        "html", "css", "haskell",
         "python", "java", "markdown",
-        "javascript", "typescript",
+        "javascript", "typescript","jsdoc",
   		},
   	},
   },
