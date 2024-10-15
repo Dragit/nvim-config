@@ -1,16 +1,87 @@
--- This file  needs to have same structure as nvconfig.lua 
+-- This file  needs to have same structure as nvconfig.lua
 -- https://github.com/NvChad/NvChad/blob/v2.5/lua/nvconfig.lua
 
 ---@type ChadrcConfig
 local M = {}
 
-M.ui = {
-	theme = "doomchad",
+M.base46 = {
+  theme = "doomchad",
+  hl_override = {
+    Comment = { fg = "#666f77" },
+    ["@comment"] = { fg = "#666f77" },
+  },
+  theme_toggle = { "doomchad", "one_light" },
+}
 
-	-- hl_override = {
-	-- 	Comment = { italic = true },
-	-- 	["@comment"] = { italic = true },
-	-- },
+M.mason = {
+  command = true,
+  pkgs = {
+    "lua-language-server",
+    "stylua",
+    "html-lsp",
+    "css-lsp",
+    "prettier",
+    "haskell-language-server",
+    "jdtls",
+    "yamllint",
+    "marksman",
+    "ltex-ls",
+    "json-lsp",
+    "eslint-lsp",
+    "stylelint-lsp",
+    "typescript-language-server",
+    "alex",
+    "clangd",
+    --  markdownlint
+  },
+}
+M.nvdash = {
+  load_on_startup = true,
+
+  header = {
+    "            :h-                                  Nhy`               ",
+    "           -mh.                           h.    `Ndho               ",
+    "           hmh+                          oNm.   oNdhh               ",
+    "          `Nmhd`                        /NNmd  /NNhhd               ",
+    "          -NNhhy                      `hMNmmm`+NNdhhh               ",
+    "          .NNmhhs              ```....`..-:/./mNdhhh+               ",
+    "           mNNdhhh-     `.-::///+++////++//:--.`-/sd`               ",
+    "           oNNNdhhdo..://++//++++++/+++//++///++/-.`                ",
+    "      y.   `mNNNmhhhdy+/++++//+/////++//+++///++////-` `/oos:       ",
+    " .    Nmy:  :NNNNmhhhhdy+/++/+++///:.....--:////+++///:.`:s+        ",
+    " h-   dNmNmy oNNNNNdhhhhy:/+/+++/-         ---:/+++//++//.`         ",
+    " hd+` -NNNy`./dNNNNNhhhh+-://///    -+oo:`  ::-:+////++///:`        ",
+    " /Nmhs+oss-:++/dNNNmhho:--::///    /mmmmmo  ../-///++///////.       ",
+    "  oNNdhhhhhhhs//osso/:---:::///    /yyyyso  ..o+-//////////:/.      ",
+    "   /mNNNmdhhhh/://+///::://////     -:::- ..+sy+:////////::/:/.     ",
+    "     /hNNNdhhs--:/+++////++/////.      ..-/yhhs-/////////::/::/`    ",
+    "       .ooo+/-::::/+///////++++//-/ossyyhhhhs/:///////:::/::::/:    ",
+    "       -///:::::::////++///+++/////:/+ooo+/::///////.::://::---+`   ",
+    "       /////+//++++/////+////-..//////////::-:::--`.:///:---:::/:   ",
+    "       //+++//++++++////+++///::--                 .::::-------::   ",
+    "       :/++++///////////++++//////.                -:/:----::../-   ",
+    "       -/++++//++///+//////////////               .::::---:::-.+`   ",
+    "       `////////////////////////////:.            --::-----...-/    ",
+    "        -///://////////////////////::::-..      :-:-:-..-::.`.+`    ",
+    "         :/://///:///::://::://::::::/:::::::-:---::-.-....``/- -   ",
+    "           ::::://::://::::::::::::::----------..-:....`.../- -+oo/ ",
+    "            -/:::-:::::---://:-::-::::----::---.-.......`-/.      ``",
+    "           s-`::--:::------:////----:---.-:::...-.....`./:          ",
+    "          yMNy.`::-.--::..-dmmhhhs-..-.-.......`.....-/:`           ",
+    "         oMNNNh. `-::--...:NNNdhhh/.--.`..``.......:/-              ",
+    "        :dy+:`      .-::-..NNNhhd+``..`...````.-::-`                ",
+    "                        .-:mNdhh:.......--::::-`                    ",
+    "                           yNh/..------..`                          ",
+    "                                                                    ",
+    "                                                        ",
+    "  ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗",
+    "  ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║",
+    "  ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║",
+    "  ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║",
+    "  ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║",
+    "  ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝",
+    "                                                        ",
+  },
 }
 
 return M

@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    -- event = 'BufWritePre', -- uncomment for format on save
+    event = 'BufWritePre', -- uncomment for format on save
     config = function()
       require "configs.conform"
     end,
@@ -19,15 +19,6 @@ return {
   {
   	"williamboman/mason.nvim",
   	opts = {
-  		ensure_installed = {
-  			"lua-language-server", "stylua",
-  			"html-lsp", "css-lsp" , "prettier",
-        "haskell-language-server", "jdtls",
-        "yamllint", "marksman","ltex-ls",
-        "json-lsp", "eslint-lsp", "stylelint-lsp",
-        "typescript-language-server",
-       --  markdownlint
-  		},
   	},
   },
 

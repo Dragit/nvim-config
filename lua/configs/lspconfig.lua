@@ -1,11 +1,20 @@
--- EXAMPLE 
+-- EXAMPLE
 local on_attach = require("nvchad.configs.lspconfig").on_attach
 local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
-local servers = { "html", "cssls", "hls", "jdtls", "marksman", "ts_ls",
-  "jsonls","eslint", "stylelint_lsp"} -- , "ltex"
+local servers = {
+  "html",
+  "cssls",
+  "hls",
+  "jdtls",
+  "marksman",
+  "ts_ls",
+  "jsonls",
+  "eslint",
+  "stylelint_lsp",
+} -- , "ltex"
 
 -- Custom on_attach function to enable inlay hints
 local custom_on_attach = function(client, bufnr)
@@ -29,49 +38,74 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+lspconfig["clangd"].setup {
+  on_attach = function(client, bufnr)
+    client.server_capabilities.signatureHelpprovider = false
+    client.server_capabilities.document_formatting = false
+    client.server_capabilities.document_range_formatting = false
+    on_attach(client, bufnr)
+  end,
+  capabilities = capabilities,
+}
+
 lspconfig["ltex"].setup {
-    on_attach = on_attach,
-    on_init = on_init,
-    capabilities = capabilities,
-    filetypes = { "bib", "gitcommit", "markdown", "org", "plaintex", "rst", "rnoweb", "tex", "pandoc", "quarto", "rmd", "context", "mail", "text" },
-    settings = {
-    		ltex = {
-    			language =  "en-US", --"de-DE" for german
-    		},
-    	},
+  on_attach = on_attach,
+  on_init = on_init,
+  capabilities = capabilities,
+  filetypes = {
+    "bib",
+    "gitcommit",
+    "markdown",
+    "org",
+    "plaintex",
+    "rst",
+    "rnoweb",
+    "tex",
+    "pandoc",
+    "quarto",
+    "rmd",
+    "context",
+    "mail",
+    "text",
+  },
+  settings = {
+    ltex = {
+      language = "en-US", --"de-DE" for german
+    },
+  },
 }
 
 -- disable tssserver formatting and enable inlay hints
 lspconfig["ts_ls"].setup {
-    on_attach = function(client)
-      -- Disable ts_ls formatting 
-      client.server_capabilities.documentFormattingProvider = false
-    end,
-    settings = {
-        javascript = {
-          inlayHints = {
-            includeInlayEnumMemberValueHints = true,
-            includeInlayFunctionLikeReturnTypeHints = true,
-            includeInlayFunctionParameterTypeHints = true,
-            includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-            includeInlayPropertyDeclarationTypeHints = true,
-            includeInlayVariableTypeHints = false,
-          },
-        },
-
-        typescript = {
-          inlayHints = {
-            includeInlayEnumMemberValueHints = true,
-            includeInlayFunctionLikeReturnTypeHints = true,
-            includeInlayFunctionParameterTypeHints = true,
-            includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-            includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-            includeInlayPropertyDeclarationTypeHints = true,
-            includeInlayVariableTypeHints = false,
-          },
-        },
+  on_attach = function(client)
+    -- Disable ts_ls formatting
+    client.server_capabilities.documentFormattingProvider = false
+  end,
+  settings = {
+    javascript = {
+      inlayHints = {
+        includeInlayEnumMemberValueHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayVariableTypeHints = false,
       },
+    },
+
+    typescript = {
+      inlayHints = {
+        includeInlayEnumMemberValueHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayFunctionParameterTypeHints = true,
+        includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
+        includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayVariableTypeHints = false,
+      },
+    },
+  },
 }
 
 --
