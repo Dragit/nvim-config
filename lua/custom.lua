@@ -38,3 +38,21 @@ vim.api.nvim_create_autocmd("FileType", {
     scroll_up_dashboard()
   end,
 })
+
+-- set indentation for C files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "c",
+  callback = function()
+    vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
+    vim.opt_local.shiftwidth = 4 -- Indentation level for C files
+  end,
+})
+
+-- set indentation for markdown files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.tabstop = 2 -- Number of spaces for a Tab in C files
+    vim.opt_local.shiftwidth = 2 -- Indentation level for C files
+  end,
+})

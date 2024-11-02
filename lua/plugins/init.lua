@@ -1,7 +1,7 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = 'BufWritePre', -- uncomment for format on save
+    event = "BufWritePre", -- uncomment for format on save
     config = function()
       require "configs.conform"
     end,
@@ -17,26 +17,36 @@ return {
   },
 
   {
-  	"williamboman/mason.nvim",
-  	opts = {
-  	},
+    "williamboman/mason.nvim",
+    opts = {},
   },
 
   {
-  	"nvim-treesitter/nvim-treesitter",
-  	opts = {
-  		ensure_installed = {
-  			"vim", "lua", "vimdoc",
-       "html", "css", "haskell",
-        "python", "java", "markdown",
-        "javascript", "typescript","jsdoc",
-  		},
-  	},
+    "nvim-treesitter/nvim-treesitter",
+    opts = {
+      ensure_installed = {
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+        "haskell",
+        "python",
+        "java",
+        "markdown",
+        "javascript",
+        "typescript",
+        "jsdoc",
+        "c",
+        "make",
+        "cmake",
+      },
+    },
   },
   -- here I try to add a config for nvim-tree
   {
     "nvim-tree/nvim-tree.lua",
-    opts = function ()
+    opts = function()
       local conf = require "nvchad.configs.nvimtree"
 
       conf.filters = {
@@ -45,6 +55,5 @@ return {
       }
       return conf
     end,
-  }
-
+  },
 }

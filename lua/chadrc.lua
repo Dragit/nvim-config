@@ -8,8 +8,8 @@ M.base46 = {
   theme = "doomchad",
   hl_override = {
     Comment = { fg = "#666f77" },
-    ["@comment"] = { fg = "#666f77" },
-  },
+    ["@comment"] = { fg = "#26898F" },
+  }, -- alte farben: "#5699AF", "#666f77"
   theme_toggle = { "doomchad", "one_light" },
 }
 

@@ -46,6 +46,7 @@ lspconfig["clangd"].setup {
     on_attach(client, bufnr)
   end,
   capabilities = capabilities,
+  language_id = "c",
 }
 
 lspconfig["ltex"].setup {
