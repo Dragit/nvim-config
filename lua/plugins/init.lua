@@ -43,7 +43,7 @@ return {
       },
     },
   },
-  -- here I try to add a config for nvim-tree
+  -- add config for nvim-tree
   {
     "nvim-tree/nvim-tree.lua",
     opts = function()
@@ -55,5 +55,15 @@ return {
       }
       return conf
     end,
+  },
+  -- Install markdown preview, use npx if available.
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    build = "cd app && yarn install",
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+    ft = { "markdown" },
   },
 }

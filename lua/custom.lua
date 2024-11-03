@@ -1,24 +1,8 @@
--- Setze die colorcolumn für alle filetypen
+-- set colorcolumn for all filetypes
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "*" }, -- Hier wird die colorcolumn aktiviert
   callback = function()
     vim.opt.colorcolumn = "80"
-  end,
-})
-
--- Deaktiviere die colorcolumn für bestimmte Dateitypen
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "markdown", "html", "text", "tex", "nvdash" }, -- Hier wird die colorcolumn deaktiviert
-  callback = function()
-    vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
-  end,
-})
-
--- Aktiviere linebreak für Text- und Markdown-Dateien
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "text", "markdown", "tex" }, -- Dateitypen, für die linebreak aktiviert werden soll
-  callback = function()
-    vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
   end,
 })
 
@@ -48,6 +32,8 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- ############### markdown/text stuff #########################################
+
 -- set indentation for markdown files
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
@@ -55,4 +41,33 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.tabstop = 2 -- Number of spaces for a Tab in C files
     vim.opt_local.shiftwidth = 2 -- Indentation level for C files
   end,
+})
+
+-- Aktiviere linebreak für Text- und Markdown-Dateien
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "text", "markdown", "tex" }, -- Dateitypen, für die linebreak aktiviert werden soll
+  callback = function()
+    vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
+  end,
+})
+
+-- Deaktiviere die colorcolumn für bestimmte Dateitypen
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "html", "text", "tex", "nvdash" }, -- Hier wird die colorcolumn deaktiviert
+  callback = function()
+    vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
+  end,
+})
+
+-- ############### end markdown/text stuff #####################################
+
+-- hide terminal padding
+local autocmd = vim.api.nvim_create_autocmd
+
+autocmd("VimEnter", {
+  command = ":silent !kitty @ set-spacing padding=0 margin=0",
+})
+
+autocmd("VimLeavePre", {
+  command = ":silent !kitty @ set-spacing padding=20 margin=10",
 })

@@ -19,10 +19,11 @@ map(
 --
 
 -- inlay hints toggle
-vim.keymap.set("n", "<leader>ih", function()
+map("n", "<leader>ih", function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end)
 
+-- ###################### JavaScript ###########################################
 -- Key mapping to generate JSDoc comments
 vim.api.nvim_set_keymap("n", "<leader>jd", ":JsDoc<CR>", {
   noremap = true,
@@ -33,4 +34,12 @@ vim.api.nvim_set_keymap(
   "<Leader>ar",
   [[:normal! o@returns {type}<CR>]],
   { noremap = true, silent = true }
+)
+
+-- ###################### markdown preview #####################################
+map(
+  "n",
+  "<leader>mp",
+  "<cmd>MarkdownPreviewToggle<CR>",
+  { desc = " toggle markdown preview" }
 )
