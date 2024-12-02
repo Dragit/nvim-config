@@ -14,18 +14,18 @@ local function scroll_up_dashboard()
   end
 end
 
--- autocommand to scroll up the dashboard
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "nvdash",
-  callback = function()
-    print "nvdash opened!"
-    scroll_up_dashboard()
-  end,
-})
+-- -- autocommand to scroll up the dashboard
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "nvdash",
+--   callback = function()
+--     print "nvdash opened!"
+--     scroll_up_dashboard()
+--   end,
+-- })
 
 -- set indentation for C files
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = "c",
+  pattern = { "c", "h", "make" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
     vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
     vim.opt_local.shiftwidth = 4 -- Indentation level for C files
@@ -70,4 +70,18 @@ autocmd("VimEnter", {
 
 autocmd("VimLeavePre", {
   command = ":silent !kitty @ set-spacing padding=20 margin=10",
+})
+
+-- autocommand for reapplying the theme upon man page opening
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "man",
+  callback = function()
+    require("nvchad.themes.utils").reload_theme "doomchad"
+    vim.opt.showtabline = 0 -- remove tab line
+    vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
+
+    --turn off padding
+    --vim.opt.signcolumn = "no"
+  end,
+  once = true,
 })
