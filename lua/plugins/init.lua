@@ -40,6 +40,7 @@ return {
         "c",
         "make",
         "cmake",
+        "bash",
       },
     },
   },
