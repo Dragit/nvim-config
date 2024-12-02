@@ -14,6 +14,7 @@ local servers = {
   "jsonls",
   "eslint",
   "stylelint_lsp",
+  "pylsp",
 } -- , "ltex"
 
 -- Custom on_attach function to enable inlay hints
