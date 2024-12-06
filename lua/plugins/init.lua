@@ -15,7 +15,19 @@ return {
       require "configs.lspconfig"
     end,
   },
-
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = {
+      current_line_blame = true, -- Enable inline blame
+      current_line_blame_opts = {
+        virt_text = true, -- Display as virtual text
+        virt_text_pos = "eol", -- Position blame text at the end of the line
+        delay = 100, -- Delay in milliseconds
+        ignore_whitespace = false, -- Include whitespace changes
+      },
+    },
+  },
+  -- unused because it move to chadrc.lua
   {
     "williamboman/mason.nvim",
     opts = {},
