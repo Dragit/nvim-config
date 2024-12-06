@@ -6,31 +6,17 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local function scroll_up_dashboard()
-  local bufnr = vim.api.nvim_get_current_buf()
-
-  if vim.bo[bufnr].filetype == "nvdash" then
-    vim.cmd "normal! gg"
-  end
-end
-
--- -- autocommand to scroll up the dashboard
--- vim.api.nvim_create_autocmd("FileType", {
---   pattern = "nvdash",
---   callback = function()
---     print "nvdash opened!"
---     scroll_up_dashboard()
---   end,
--- })
-
--- set indentation for C files
+-- #################### c coding stuff #########################################
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "h", "make" }, -- Dateitypen bei denen ich 4 Indents will
+  pattern = { "c", "make" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
     vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
     vim.opt_local.shiftwidth = 4 -- Indentation level for C files
   end,
 })
+
+-- enable c syntax highlighting for header files
+vim.g.c_syntax_for_h = 1
 
 -- ############### markdown/text stuff #########################################
 
