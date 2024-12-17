@@ -2,7 +2,6 @@ return {
   {
     "heavenshell/vim-jsdoc",
     ft = { "javascript", "typescript" }, -- Load only for JavaScript/TypeScript
-    event = "VeryLazy",
     config = function()
       -- -- Execute the Makefile's install target
       -- local make_install_status = vim.fn.system "make install"
