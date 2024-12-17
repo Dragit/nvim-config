@@ -60,13 +60,7 @@ return {
   {
     "nvim-tree/nvim-tree.lua",
     opts = function()
-      local conf = require "nvchad.configs.nvimtree"
-
-      conf.filters = {
-        git_ignored = false,
-        dotfiles = false,
-      }
-      return conf
+      require "configs.nvim-tree"
     end,
   },
   -- Install markdown preview, use npx if available.
