@@ -25,15 +25,16 @@ end)
 
 -- ###################### JavaScript ###########################################
 -- Key mapping to generate JSDoc comments
-vim.api.nvim_set_keymap("n", "<leader>jd", ":JsDoc<CR>", {
+map("n", "<leader>jd", ":JsDoc<CR>", {
+  desc = "gen JsDoc comment",
   noremap = true,
   silent = true,
 })
-vim.api.nvim_set_keymap(
+map(
   "n",
   "<Leader>ar",
   [[:normal! o@returns {type}<CR>]],
-  { noremap = true, silent = true }
+  { desc = "JsDoc returns", noremap = true, silent = true }
 )
 
 -- ###################### markdown preview #####################################
@@ -43,3 +44,8 @@ map(
   "<cmd>MarkdownPreviewToggle<CR>",
   { desc = " toggle markdown preview" }
 )
+
+-- keybind, to activate lsp code formatting
+map("n", "<Leader>cf", function()
+  vim.lsp.buf.format { async = false }
+end, { desc = "format code using lsp", noremap = true, silent = true })
