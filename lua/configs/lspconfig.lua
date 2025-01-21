@@ -41,11 +41,22 @@ end
 
 lspconfig["clangd"].setup {
   on_attach = function(client, bufnr)
-    client.server_capabilities.signatureHelpprovider = false
-    client.server_capabilities.document_formatting = false
-    client.server_capabilities.document_range_formatting = false
+    -------------- uncomment to enable autoformat on save ---------------------
+    -- if client.server_capabilities.documentFormattingProvider then
+    --   vim.api.nvim_create_autocmd("BufWritePre", {
+    --     buffer = bufnr,
+    --     callback = function()
+    --       vim.lsp.buf.format { async = false }
+    --     end,
+    --   })
+    -- end
     on_attach(client, bufnr)
   end,
+  cmd = {
+    "clangd",
+    "--header-insertion=never",
+    "--completion-style=detailed",
+  },
   capabilities = capabilities,
   language_id = "c",
 }
