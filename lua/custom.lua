@@ -8,13 +8,21 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- #################### c coding stuff #########################################
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "make" }, -- Dateitypen bei denen ich 4 Indents will
+  pattern = { "c" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
     vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
     vim.opt_local.shiftwidth = 4 -- Indentation level for C files
   end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "make" }, -- Dateitypen bei denen ich 4 Indents will
+  callback = function()
+    vim.opt_local.expandtab = false -- why gnu make, tab bad
+    vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
+    vim.opt_local.shiftwidth = 4 -- Indentation level for C files
+  end,
+})
 -- enable c syntax highlighting for header files
 vim.g.c_syntax_for_h = 1
 
