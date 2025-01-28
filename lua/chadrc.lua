@@ -9,6 +9,7 @@ M.base46 = {
   hl_override = {
     -- change DiagnosticHint
     DiagnosticHint = { fg = "cyan" },
+    St_LspHints = { fg = "cyan", bg = "statusline_bg" },
     -- change diff highlihgting to background
     DiffAdd = { fg = "NONE", bg = { "vibrant_green", "black", 70 } },
     DiffText = { fg = "NONE", bg = { "nord_blue", "black", 80 } },

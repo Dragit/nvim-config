@@ -78,6 +78,14 @@ return {
     "hiphish/rainbow-delimiters.nvim",
     event = "BufRead",
     config = function()
+      -- disabele colord html tags
+      vim.g.rainbow_delimiters = {
+        query = {
+          javascript = "rainbow-parens", -- Enable rainbow for JavaScript
+          tsx = "rainbow-parens", -- Enable rainbow for TSX
+          html = "", -- Disable for HTML
+        },
+      }
       -- get colors for rainbow-delimiters
       local colors = dofile(vim.g.base46_cache .. "colors")
       vim.cmd("highlight RainbowDelimiterRed guifg=" .. colors.red)
