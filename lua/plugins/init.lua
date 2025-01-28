@@ -73,4 +73,20 @@ return {
     end,
     ft = { "markdown" },
   },
+  -- Rainbow brackets
+  {
+    "hiphish/rainbow-delimiters.nvim",
+    event = "BufRead",
+    config = function()
+      -- get colors for rainbow-delimiters
+      local colors = dofile(vim.g.base46_cache .. "colors")
+      vim.cmd("highlight RainbowDelimiterRed guifg=" .. colors.red)
+      vim.cmd("highlight RainbowDelimiterYellow guifg=" .. colors.yellow)
+      vim.cmd("highlight RainbowDelimiterBlue guifg=" .. colors.blue)
+      vim.cmd("highlight RainbowDelimiterOrange guifg=" .. colors.orange)
+      vim.cmd("highlight RainbowDelimiterGreen guifg=" .. colors.green)
+      vim.cmd("highlight RainbowDelimiterViolet guifg=" .. colors.purple)
+      vim.cmd("highlight RainbowDelimiterCyan guifg=" .. colors.cyan)
+    end,
+  },
 }

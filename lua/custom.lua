@@ -1,4 +1,3 @@
--- set colorcolumn for all filetypes
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "*" }, -- Hier wird die colorcolumn aktiviert
   callback = function()
@@ -66,16 +65,18 @@ autocmd("VimLeavePre", {
   command = ":silent !kitty @ set-spacing padding=20 margin=10",
 })
 
+-- Make syntax highlihgting of man pagees work properly
+dofile(vim.g.base46_cache .. "syntax")
+-- INFO: deprecated, see above
 -- autocommand for reapplying the theme upon man page opening
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "man",
-  callback = function()
-    require("nvchad.themes.utils").reload_theme "doomchad"
-    vim.opt.showtabline = 0 -- remove tab line
-    vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
-
-    --turn off padding
-    --vim.opt.signcolumn = "no"
-  end,
-  once = true,
-})
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "man",
+--   callback = function()
+--     require("nvchad.themes.utils").reload_theme "doomchad"
+--     vim.opt.showtabline = 0 -- remove tab line
+--     vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
+--     --turn off padding, padding on looks better
+--     --vim.opt.signcolumn = "no"
+--   end,
+--   once = true,
+-- })

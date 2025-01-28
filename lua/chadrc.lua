@@ -7,9 +7,19 @@ local M = {}
 M.base46 = {
   theme = "doomchad",
   hl_override = {
-    Comment = { fg = "#666f77" },
+    -- change DiagnosticHint
+    DiagnosticHint = { fg = "cyan" },
+    -- change diff highlihgting to background
+    DiffAdd = { fg = "NONE", bg = { "green", "black", 89 } },
+    DiffText = { fg = "NONE", bg = { "nord_blue", "black", 80 } },
+    DiffChange = { fg = "NONE", bg = { "nord_blue", "black", 75 } },
+    DiffDelete = { fg = "NONE", bg = { "red", "black", 60 } },
+    DiffDeleteDim = { fg = "NONE", bg = { "red", "black", 75 } },
+    DiffAddAsDelete = { fg = "NONE", bg = { "red", "black", 75 } },
+    -- change Commment color to be more readable
+    -- alte farben: "#5699AF", "#666f77"
     ["@comment"] = { fg = "#26898F" },
-  }, -- alte farben: "#5699AF", "#666f77"
+  },
   theme_toggle = { "doomchad", "one_light" },
 }
 
