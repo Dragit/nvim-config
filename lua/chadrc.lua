@@ -10,7 +10,7 @@ M.base46 = {
     -- change DiagnosticHint
     DiagnosticHint = { fg = "cyan" },
     -- change diff highlihgting to background
-    DiffAdd = { fg = "NONE", bg = { "green", "black", 89 } },
+    DiffAdd = { fg = "NONE", bg = { "vibrant_green", "black", 70 } },
     DiffText = { fg = "NONE", bg = { "nord_blue", "black", 80 } },
     DiffChange = { fg = "NONE", bg = { "nord_blue", "black", 75 } },
     DiffDelete = { fg = "NONE", bg = { "red", "black", 60 } },
