@@ -21,7 +21,11 @@ map(
 -- inlay hints toggle
 map("n", "<leader>ih", function()
   vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end)
+end, {
+  desc = "toggle lsp inlay hints",
+  noremap = true,
+  silent = true,
+})
 
 -- ###################### JavaScript ###########################################
 -- Key mapping to generate JSDoc comments
@@ -42,7 +46,7 @@ map(
   "n",
   "<leader>mp",
   "<cmd>MarkdownPreviewToggle<CR>",
-  { desc = " toggle markdown preview" }
+  { desc = "toggle markdown preview" }
 )
 
 -- keybind, to activate lsp code formatting
