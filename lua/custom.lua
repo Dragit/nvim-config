@@ -5,6 +5,22 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- Deaktiviere die colorcolumn für bestimmte Dateitypen
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown", "html", "text", "tex", "nvdash", "man" }, -- Hier wird die colorcolumn deaktiviert
+  callback = function()
+    vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
+  end,
+})
+-- enable code folding via treesitter
+vim.opt.foldmethod = "expr" -- Set fold method to expression
+vim.opt_local.foldlevel = 99 -- Open all folds by default
+vim.opt.foldtext = "" -- Customize fold text if needed
+vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
+  callback = function()
+    vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Use Treesitter for folding
+  end,
+})
 -- #################### c coding stuff #########################################
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c" }, -- Dateitypen bei denen ich 4 Indents will
@@ -41,14 +57,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "text", "markdown", "tex" }, -- Dateitypen, für die linebreak aktiviert werden soll
   callback = function()
     vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
-  end,
-})
-
--- Deaktiviere die colorcolumn für bestimmte Dateitypen
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "markdown", "html", "text", "tex", "nvdash" }, -- Hier wird die colorcolumn deaktiviert
-  callback = function()
-    vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
   end,
 })
 
