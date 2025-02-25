@@ -54,7 +54,7 @@ lspconfig["clangd"].setup {
   end,
   cmd = {
     "clangd",
-    "--header-insertion=never",
+    -- "--header-insertion=never", -- uncomment to disable autoimports
     "--completion-style=detailed",
   },
   capabilities = capabilities,
