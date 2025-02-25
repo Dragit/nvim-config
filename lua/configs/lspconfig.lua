@@ -84,6 +84,7 @@ lspconfig["ltex"].setup {
   settings = {
     ltex = {
       language = "en-US", --"de-DE" for german
+      -- checkFrequency = "save", -- activate this for less checks
     },
   },
 }

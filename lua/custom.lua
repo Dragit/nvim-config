@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 -- enable code folding via treesitter
 vim.opt.foldmethod = "expr" -- Set fold method to expression
-vim.opt_local.foldlevel = 99 -- Open all folds by default
+vim.opt.foldlevel = 99 -- Open all folds by default
 vim.opt.foldtext = "" -- Customize fold text if needed
 vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
   callback = function()
