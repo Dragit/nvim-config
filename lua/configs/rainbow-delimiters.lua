@@ -16,7 +16,7 @@ vim.g.rainbow_delimiters = {
 -- vim.cmd("highlight RainbowDelimiterCyan guifg=" .. colors.cyan)
 --
 local colors = {
-  red = "#FF3C3C",
+  red = "#E03519",
   orange = "#FFAA9A",
   yellow = "#E3D95C",
   green = "#A8D93F",
@@ -25,10 +25,20 @@ local colors = {
   magenta = "#D45D9A",
 }
 
+local catPuccinColors = {
+  red = "##ed8796",
+  orange = "#ef9f76",
+  yellow = "#e5c890",
+  green = "#a6d189",
+  cyan = "#99d1db",
+  blue = "#8caaee",
+  purple = "#ca9ee6",
+}
+
 vim.cmd("highlight RainbowDelimiterRed guifg=" .. colors.red)
-vim.cmd("highlight RainbowDelimiterYellow guifg=" .. colors.yellow)
-vim.cmd("highlight RainbowDelimiterBlue guifg=" .. colors.blue)
-vim.cmd("highlight RainbowDelimiterOrange guifg=" .. colors.orange)
-vim.cmd("highlight RainbowDelimiterGreen guifg=" .. colors.green)
+vim.cmd("highlight RainbowDelimiterYellow guifg=" .. catPuccinColors.yellow)
+vim.cmd("highlight RainbowDelimiterBlue guifg=" .. catPuccinColors.blue)
+vim.cmd("highlight RainbowDelimiterOrange guifg=" .. catPuccinColors.orange)
+vim.cmd("highlight RainbowDelimiterGreen guifg=" .. catPuccinColors.green)
 vim.cmd("highlight RainbowDelimiterViolet guifg=" .. colors.magenta)
-vim.cmd("highlight RainbowDelimiterCyan guifg=" .. colors.cyan)
+vim.cmd("highlight RainbowDelimiterCyan guifg=" .. catPuccinColors.cyan)
