@@ -57,7 +57,6 @@ return {
         "git_config",
         "git_rebase",
         "gitattributes",
-        "gitcommit",
         "gitignore",
         "ssh_config",
       },
