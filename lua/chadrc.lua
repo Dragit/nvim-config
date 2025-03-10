@@ -11,12 +11,13 @@ M.base46 = {
     DiagnosticHint = { fg = "cyan" },
     St_LspHints = { fg = "cyan", bg = "statusline_bg" },
     -- change diff highlihgting to background
-    DiffAdd = { fg = "NONE", bg = { "vibrant_green", "black", 70 } },
+    DiffAdd = { fg = "NONE", bg = "#1a3d1a" },
     DiffText = { fg = "NONE", bg = { "nord_blue", "black", 80 } },
     DiffChange = { fg = "NONE", bg = { "nord_blue", "black", 75 } },
-    DiffDelete = { fg = "NONE", bg = { "red", "black", 60 } },
-    DiffDeleteDim = { fg = "NONE", bg = { "red", "black", 75 } },
-    DiffAddAsDelete = { fg = "NONE", bg = { "red", "black", 75 } },
+    DiffDelete = { fg = "NONE", bg = "#4d1a1a" },
+    DiffDeleteDim = { fg = "NONE", bg = "#4d1a1a" },
+    DiffAddAsDelete = { fg = "NONE", bg = "#4d1a1a" },
+
     -- change Commment color to be more readable
     -- alte farben: "#5699AF", "#666f77"
     ["@comment"] = { fg = "#26898F" },
