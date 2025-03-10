@@ -6,6 +6,11 @@ return {
       require "configs.conform"
     end,
   },
+  -- added this to fix issue with leader key
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+  },
 
   -- These are some examples, uncomment them if you want to see them work!
   {
@@ -22,12 +27,33 @@ return {
       current_line_blame_opts = {
         virt_text = true, -- Display as virtual text
         virt_text_pos = "eol", -- Position blame text at the end of the line
-        delay = 100, -- Delay in milliseconds
+        delay = 3000, -- Delay in milliseconds
         ignore_whitespace = false, -- Include whitespace changes
       },
     },
+    config = function()
+      require("gitsigns").setup()
+      vim.keymap.set(
+        "n",
+        "<leader>gp",
+        ":Gitsigns preview_hunk_inline<CR>",
+        { desc = "Gitsigns preview hunk inline" }
+      )
+      vim.keymap.set(
+        "n",
+        "<leader>gqa",
+        ":Gitsigns setqflist target=all<CR>",
+        { desc = "Gitsigns: hunk quickfix all" }
+      )
+      vim.keymap.set(
+        "n",
+        "<leader>gqt",
+        ":Gitsigns setqflist target=attached<CR>",
+        { desc = "Gitsigns: hunk quickfix attached" }
+      )
+    end,
   },
-  -- unused because it move to chadrc.lua
+  -- unused because it moved to chadrc.lua
   {
     "williamboman/mason.nvim",
     opts = {},
