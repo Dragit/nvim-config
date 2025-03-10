@@ -41,15 +41,15 @@ end
 
 lspconfig["clangd"].setup {
   on_attach = function(client, bufnr)
-    -------------- uncomment to enable autoformat on save ---------------------
-    -- if client.server_capabilities.documentFormattingProvider then
-    --   vim.api.nvim_create_autocmd("BufWritePre", {
-    --     buffer = bufnr,
-    --     callback = function()
-    --       vim.lsp.buf.format { async = false }
-    --     end,
-    --   })
-    -- end
+    --------------------------- enable autoformat on save ---------------------
+    if client.server_capabilities.documentFormattingProvider then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format { async = false }
+        end,
+      })
+    end
     on_attach(client, bufnr)
   end,
   cmd = {
