@@ -80,6 +80,7 @@ return {
         "cmake",
         "bash",
         "tmux",
+        "tsx",
         "git_config",
         "git_rebase",
         "gitattributes",
