@@ -31,8 +31,8 @@ return {
         ignore_whitespace = false, -- Include whitespace changes
       },
     },
-    config = function()
-      require("gitsigns").setup()
+    config = function(_, opts)
+      require("gitsigns").setup(opts)
       vim.keymap.set(
         "n",
         "<leader>gp",
