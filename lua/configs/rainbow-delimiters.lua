@@ -65,7 +65,9 @@ local catPuccinColors = {
 vim.cmd("highlight RainbowDelimiterRed guifg=" .. colors.red)
 vim.cmd("highlight RainbowDelimiterYellow guifg=" .. colors.yellow)
 vim.cmd("highlight RainbowDelimiterBlue guifg=" .. catPuccinColors.blue)
-vim.cmd("highlight RainbowDelimiterOrange guifg=" .. catPuccinColors.orange)
+vim.cmd(
+  "highlight RainbowDelimiterOrange guifg=" .. gruvBoxColors.bright_orange
+)
 vim.cmd("highlight RainbowDelimiterGreen guifg=" .. catPuccinColors.green)
 vim.cmd("highlight RainbowDelimiterViolet guifg=" .. colors.magenta)
 vim.cmd("highlight RainbowDelimiterCyan guifg=" .. catPuccinColors.cyan)
