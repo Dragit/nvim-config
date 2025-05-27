@@ -1,4 +1,5 @@
 vim.g.rainbow_delimiters = {
+  submodules = false,
   query = {
     javascript = "rainbow-parens", -- Enable rainbow for JavaScript
     tsx = "rainbow-parens", -- Enable rainbow for TSX
