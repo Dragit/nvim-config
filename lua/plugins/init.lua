@@ -81,6 +81,7 @@ return {
         "bash",
         "tmux",
         "tsx",
+        "yaml",
         "git_config",
         "git_rebase",
         "gitattributes",
@@ -114,4 +115,115 @@ return {
       require "configs.rainbow-delimiters"
     end,
   },
+  {
+    "OXY2DEV/markview.nvim",
+    lazy = false,
+    config = function(plugin, opts)
+      --
+
+      -- Force markview.nvim to be sourced before everything else
+      vim.opt.rtp:prepend(plugin.dir)
+
+      -- Set up the plugin
+      require("markview").setup(opts)
+    end,
+    opts = {
+      preview = {
+        modes = { "n", "no", "c", "i" },
+        linewise_hybrid_mode = true,
+        hybrid_modes = { "n", "i" },
+        debounce = 70,
+      },
+
+      markdown_inline = {
+        enable = false,
+      },
+
+      highlight_groups = {},
+      html = {
+        enable = false,
+      },
+      latex = {
+        enable = true,
+
+        blocks = {
+          enable = false,
+        },
+        commands = {},
+        escapes = {},
+        fonts = {},
+        inlines = {},
+        parenthesis = {},
+        subscripts = {},
+        superscripts = {},
+        symbols = {},
+        texts = {},
+      },
+      bullet = {
+        enable = false,
+      },
+      markdown = {
+        tables = {
+          enable = true,
+        },
+        metadata_minus = { enable = false },
+        horizontal_rules = {},
+        headings = {
+          enable = false,
+        },
+        code_blocks = {
+          label_direction = "left",
+          sign = false,
+        },
+        block_quotes = {},
+        list_items = { enable = false },
+        metadata_plus = {},
+        reference_definitions = { enable = false },
+      },
+      typst = {
+        enable = false,
+      },
+      yaml = {
+        enable = false,
+      },
+    },
+  },
+  -- {
+  --   "MeanderingProgrammer/render-markdown.nvim",
+  --   dependencies = {
+  --     "nvim-treesitter/nvim-treesitter",
+  --     "nvim-tree/nvim-web-devicons",
+  --   },
+  --   ft = { "markdown" },
+  --   config = function()
+  --     require("render-markdown").setup {
+  --       -- Optional: you can add your custom settings here
+  --       enabled = true,
+  --       render_modes = true,
+  --       debounce = 160,
+  --       bullet = {
+  --         render_modes = true,
+  --         highlight = "@markup.list",
+  --       },
+  --       heading = {
+  --         enabled = false,
+  --       },
+  --       quote = {
+  --         render_modes = true,
+  --       },
+  --       html = {
+  --         comment = {
+  --           -- Turn on / off HTML comment concealing.
+  --           conceal = false,
+  --         },
+  --       },
+  --       code = {
+  --         enabled = false,
+  --       },
+  --       latex = {
+  --         enabled = false,
+  --       },
+  --     }
+  --   end,
+  -- },
 }

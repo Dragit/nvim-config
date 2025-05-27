@@ -43,7 +43,7 @@ vim.g.c_syntax_for_h = 1
 
 -- ############### markdown/text stuff #########################################
 
--- set indentation for markdown files
+-- set indentation and conceallevel for markdown files
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
@@ -57,6 +57,29 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = { "text", "markdown", "tex" }, -- Dateitypen, für die linebreak aktiviert werden soll
   callback = function()
     vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "MarkviewEnable", -- ← fires after markview loads its highlights
+  callback = function()
+    vim.print "color"
+    vim.schedule(function()
+      -- code and codeinfo are deprecated, setting for no reason!
+      vim.cmd [[
+        highlight MarkviewCode guibg=#32363e
+        highlight MarkviewPalette0Bg guibg=#32363e
+        highlight MarkviewPalette0 guibg=#32363e
+        highlight MarkviewCodeInfo guibg=#32363e
+        highlight MarkviewIcon0 guifg=#ecbe7b guibg=#32363e
+        highlight MarkviewIcon1 guifg=#ecbe7b guibg=#32363e
+        highlight MarkviewIcon2 guifg=#ecbe7b guibg=#32363e
+        highlight MarkviewIcon3 guifg=#ecbe7b guibg=#32363e
+        highlight MarkviewIcon4 guifg=#ecbe7b guibg=#32363e
+        highlight MarkviewIcon5 guifg=#ecbe7b guibg=#32363e
+        highlight MarkviewIcon6 guifg=#ecbe7b guibg=#32363e
+        ]]
+    end)
   end,
 })
 
