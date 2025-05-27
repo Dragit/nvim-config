@@ -1,0 +1,15 @@
+{
+  "name": "latex-to-unicode",
+  "contributes": {
+    "snippets": [
+      {
+        "language": "plaintex",
+        "path": "./LaTeX-to-Unicode.json"
+      },
+      {
+        "language": "tex",
+        "path": "./LaTeX-to-Unicode.json"
+      }
+    ]
+  }
+}

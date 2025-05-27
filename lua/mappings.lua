@@ -41,13 +41,44 @@ map(
   { desc = "JsDoc returns", noremap = true, silent = true }
 )
 
--- ###################### markdown preview #####################################
+-- ###################### markdown #############################################
+-- markdown preview
 map(
   "n",
   "<leader>mp",
   "<cmd>MarkdownPreviewToggle<CR>",
   { desc = "toggle markdown preview" }
 )
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "markdown" },
+  callback = function()
+    map("n", "<leader>sp", function()
+      local ls = require "luasnip"
+      local vscode = require "luasnip.loaders.from_vscode"
+
+      if not vim.g.plaintex_enabled_for_markdown then
+        -- Enable: Extend markdown to include plaintex
+        ls.filetype_extend("markdown", { "plaintex" })
+        vscode.lazy_load()
+        vim.g.plaintex_enabled_for_markdown = true
+        print "Enabled plaintex snippets in markdown"
+      else
+        -- Disable: Remove the extension manually (LuaSnip doesn't provide a direct un-extend)
+        -- So we "reset" the filetype extension table for markdown
+        ls.filetype_set("markdown", { "markdown" }) -- Reset to just markdown
+        vim.g.plaintex_enabled_for_markdown = false
+        print "Disabled plaintex snippets in markdown"
+      end
+
+      -- Force buffer to re-apply snippet setup
+      vim.cmd "doautocmd FileType"
+    end, {
+      desc = "Toggle plaintex snippets in markdown",
+      silent = true,
+    })
+  end,
+})
 
 -- keybind, to activate lsp code formatting
 map("n", "<Leader>cf", function()

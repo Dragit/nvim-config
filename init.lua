@@ -50,6 +50,10 @@ end)
 
 require "custom" -- load my coustom files
 
+-- load snippets
 vim.g.lua_snippets_path = "/home/clemi/.config/nvim/lua/lua_snippets"
 require "lua_snippets.snippets"
 require "lua_snippets.react"
+require("luasnip.loaders.from_vscode").lazy_load {
+  paths = { "./lua/lua_snippets/vsCodeStyle" },
+}
