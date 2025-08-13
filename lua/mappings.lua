@@ -27,6 +27,44 @@ end, {
   silent = true,
 })
 
+-- ###################### Conform ###########################################
+-- Toggle flag
+vim.g.format_on_save_enabled = true
+
+-- toggle function
+local function toggle_format_on_save()
+  vim.g.format_on_save_enabled = not vim.g.format_on_save_enabled
+  print(
+    "Format on Save: "
+      .. (vim.g.format_on_save_enabled and "Enabled" or "Disabled")
+  )
+end
+
+-- Map <leader>tf
+map(
+  "n",
+  "<leader>tf",
+  toggle_format_on_save,
+  { desc = "Toggle format on save" }
+)
+
+-- Create the :ToggleFormatOnSave command
+vim.api.nvim_create_user_command(
+  "ToggleFormatOnSave",
+  toggle_format_on_save,
+  {}
+)
+
+-- Format on save, only if enabled
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function(args)
+    if vim.g.format_on_save_enabled then
+      require("conform").format { bufnr = args.buf, timeout_ms = 500 }
+    end
+  end,
+})
+
 -- ###################### JavaScript ###########################################
 -- Key mapping to generate JSDoc comments
 map("n", "<leader>jd", ":JsDoc<CR>", {

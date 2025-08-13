@@ -1,3 +1,4 @@
+local autocmd = vim.api.nvim_create_autocmd
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "*" }, -- Hier wird die colorcolumn aktiviert
   callback = function()
@@ -12,15 +13,54 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
   end,
 })
--- enable code folding via treesitter
+-- ################################ Folds ######################################
+-- Silently load view
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
+  command = "silent! loadview",
+})
+-- enable code folding via LSP/treesitter and disable for haskell
+-- Function to set folding based on LSP or fallback to Treesitter
+local function set_folds()
+  if vim.lsp.get_clients() and next(vim.lsp.get_clients()) then
+    -- Use LSP for folding
+    vim.opt_local.foldexpr = "v:lua.vim.lsp.foldexpr()"
+  elseif vim.treesitter then
+    -- Fallback to Treesitter for folding
+    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+  else
+    -- Default to no folding
+    vim.opt_local.foldmethod = "manual"
+  end
+end
 vim.opt.foldmethod = "expr" -- Set fold method to expression
 vim.opt.foldlevel = 99 -- Open all folds by default
 vim.opt.foldtext = "" -- Customize fold text if needed
+vim.api.nvim_create_augroup("Folds", { clear = true })
 vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
+  group = "Folds",
   callback = function()
-    vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- Use Treesitter for folding
+    if vim.bo.filetype ~= "haskell" then
+      set_folds()
+    else
+      -- Default to no folding
+      vim.opt_local.foldmethod = "manual"
+    end
   end,
 })
+-- #################### tmux after start #######################################
+autocmd("User", {
+  pattern = "LazyDone",
+  callback = function()
+    if os.getenv "TMUX" then
+      vim.fn.jobstart(
+        { "tmux", "wait-for", "-S", "nvim-start" },
+        { detach = true }
+      )
+      print "Signaled tmux: nvim-start"
+    end
+  end,
+})
+
 -- #################### c coding stuff #########################################
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "c" }, -- Dateitypen bei denen ich 4 Indents will
@@ -41,6 +81,14 @@ vim.api.nvim_create_autocmd("FileType", {
 -- enable c syntax highlighting for header files
 vim.g.c_syntax_for_h = 1
 
+-- #################### java coding stuff ######################################
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "java" },
+  callback = function()
+    vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
+    vim.opt_local.shiftwidth = 4 -- Indentation level for C files
+  end,
+})
 -- ############### markdown/text stuff #########################################
 
 -- set indentation and conceallevel for markdown files
@@ -49,6 +97,13 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.opt_local.tabstop = 2 -- Number of spaces for a Tab in C files
     vim.opt_local.shiftwidth = 2 -- Indentation level for C files
+  end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "tex" },
+  callback = function()
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
   end,
 })
 
@@ -86,7 +141,6 @@ vim.api.nvim_create_autocmd("User", {
 -- ############### end markdown/text stuff #####################################
 
 -- hide terminal padding
-local autocmd = vim.api.nvim_create_autocmd
 
 autocmd("VimEnter", {
   command = ":silent !kitty @ set-spacing padding=0 margin=0",
