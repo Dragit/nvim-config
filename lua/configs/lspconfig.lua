@@ -8,7 +8,6 @@ local servers = {
   "html",
   "cssls",
   "hls",
-  "jdtls",
   "marksman",
   "ts_ls",
   "jsonls",
@@ -42,14 +41,14 @@ end
 lspconfig["clangd"].setup {
   on_attach = function(client, bufnr)
     --------------------------- enable autoformat on save ---------------------
-    if client.server_capabilities.documentFormattingProvider then
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.format { async = false }
-        end,
-      })
-    end
+    -- if client.server_capabilities.documentFormattingProvider then
+    --   vim.api.nvim_create_autocmd("BufWritePre", {
+    --     buffer = bufnr,
+    --     callback = function()
+    --       vim.lsp.buf.format { async = false }
+    --     end,
+    --   })
+    -- end
     on_attach(client, bufnr)
   end,
   cmd = {
@@ -59,6 +58,30 @@ lspconfig["clangd"].setup {
   },
   capabilities = capabilities,
   language_id = "c",
+}
+
+lspconfig["jdtls"].setup {
+  on_attach = custom_on_attach,
+  on_init = on_init,
+  capabilities = capabilities,
+  -- settings = {
+  --   java = {
+  --     configuration = {
+  --       runtimes = {
+  --         {
+  --           name = "JavaSE-21", -- or JavaSE-15 if you're using Java 15
+  --           path = "/usr/lib/jvm/java-21-openjdk", -- adjust to your JDK
+  --           default = true,
+  --         },
+  --       },
+  --     },
+  --     compiler = {
+  --       source = "21", -- enable text blocks
+  --       compliance = "21",
+  --       target = "21",
+  --     },
+  --   },
+  -- },
 }
 
 lspconfig["ltex"].setup {
@@ -84,7 +107,7 @@ lspconfig["ltex"].setup {
   settings = {
     ltex = {
       language = "en-US", --"de-DE" for german
-      -- checkFrequency = "save", -- activate this for less checks
+      checkFrequency = "save", -- activate this for less checks
     },
   },
 }
