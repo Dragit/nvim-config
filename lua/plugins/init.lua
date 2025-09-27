@@ -11,6 +11,14 @@ return {
     "folke/which-key.nvim",
     event = "VeryLazy",
   },
+  -- fix luasnip issue
+  {
+    "L3MON4D3/LuaSnip",
+    opts = {
+      region_check_events = "InsertEnter",
+      delete_check_events = "InsertLeave",
+    },
+  },
 
   -- These are some examples, uncomment them if you want to see them work!
   {

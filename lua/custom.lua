@@ -91,12 +91,12 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 -- ############### markdown/text stuff #########################################
 
--- set indentation and conceallevel for markdown files
+-- set indentation for markdown files
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
-    vim.opt_local.tabstop = 2 -- Number of spaces for a Tab in C files
-    vim.opt_local.shiftwidth = 2 -- Indentation level for C files
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
   end,
 })
 vim.api.nvim_create_autocmd("FileType", {
