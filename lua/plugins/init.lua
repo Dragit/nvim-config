@@ -173,6 +173,56 @@ return {
   --   end,
   -- },
   {
+    "nvim-mini/mini.surround",
+    event = "VeryLazy",
+    opts = {
+      custom_surroundings = {
+        -- Lua long brackets
+        s = {
+          -- Configuration for "input" (like for delete) is done with Lua patterns
+          input = { find = "%[%[.-%]%]", extract = "^(..).*(..)$" },
+          -- Configuration for "output" (like for add) is done with plain text
+          output = { left = "[[", right = "]]" },
+        },
+        -- Use `(` to insert with spaces, `)` will still add without them
+        ["("] = { output = { left = "( ", right = " )" } },
+      },
+      mappings = {
+        add = "sa", -- Add surrounding in Normal and Visual modes
+        delete = "sd", -- Delete surrounding
+        find = "sf", -- Find surrounding (to the right)
+        find_left = "sF", -- Find surrounding (to the left)
+        highlight = "sh", -- Highlight surrounding
+        replace = "sr", -- Replace surrounding
+        update_n_lines = "sn", -- Update `n_lines`
+      },
+    },
+  },
+  -- try nvim surround
+  -- see: :h nvim-surround.usage
+  {
+    "kylechui/nvim-surround",
+    version = "^3.0.0", -- Use for stability; omit to use `main` branch for the latest features
+    event = "VeryLazy",
+    config = function()
+      require("nvim-surround").setup {
+        keymaps = {
+          insert = "<C-g>s",
+          insert_line = "<C-g>S",
+          normal = "ys",
+          normal_cur = "yss",
+          normal_line = "yS",
+          normal_cur_line = "ySS",
+          visual = "S",
+          visual_line = "gS",
+          delete = "ds",
+          change = "cs",
+          change_line = "cS",
+        },
+      }
+    end,
+  },
+  {
     "OXY2DEV/markview.nvim",
     lazy = false,
     config = function(plugin, opts)
