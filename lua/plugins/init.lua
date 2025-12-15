@@ -134,6 +134,7 @@ return {
         "gitattributes",
         "gitignore",
         "ssh_config",
+        "sql",
       },
     },
   },

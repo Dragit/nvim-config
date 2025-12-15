@@ -130,3 +130,51 @@ vim.api.nvim_create_autocmd("FileType", {
 map("n", "<Leader>cf", function()
   vim.lsp.buf.format { async = false }
 end, { desc = "format code using lsp", noremap = true, silent = true })
+
+-- ###################### SQL ##################################################
+-- Send a single line to the terminal
+map("n", "<leader>sl", function()
+  require("nvchad.term").runner {
+    pos = "sp",
+    id = "htoggleTerm",
+    cmd = vim.api.nvim_get_current_line(),
+    clear_cmd = "",
+  }
+end, {
+  desc = "Send line to terminal",
+  noremap = true,
+})
+
+-- Send a visual selection to the terminal
+map("v", "<leader>st", function()
+  require("nvchad.term").runner {
+    pos = "sp",
+    id = "htoggleTerm",
+    cmd = function()
+      local mode = vim.api.nvim_get_mode().mode
+      local selection = ""
+      if mode == "v" then
+        local s_start = vim.fn.getpos "v"
+        local s_end = vim.fn.getpos "."
+        local lines = vim.fn.getregion(s_start, s_end)
+        selection = table.concat(lines, "\n")
+      elseif mode == "V" then
+        local l_start = vim.fn.line "."
+        local l_end = vim.fn.line "v"
+        local lines = vim.fn.getline(
+          math.min(l_start, l_end), -- smaller value fist
+          math.max(l_start, l_end)
+        )
+        if type(lines) == "string" then
+          lines = { lines }
+        end
+        selection = table.concat(lines, "\n")
+      end
+      return selection
+    end,
+    clear_cmd = "",
+  }
+end, {
+  desc = "Send visual selection terminal",
+  noremap = true,
+})

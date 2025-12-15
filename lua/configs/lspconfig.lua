@@ -100,6 +100,8 @@ local servers = {
       },
     },
   },
+  sqls = {},
+  sqruff = {},
 }
 
 -- Setup each server
