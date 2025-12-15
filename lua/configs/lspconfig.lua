@@ -45,26 +45,29 @@ local servers = {
     },
     language_id = "c",
   },
-  jdtls = {
-    -- settings = {
-    --   java = {
-    --     configuration = {
-    --       runtimes = {
-    --         {
-    --           name = "JavaSE-21", -- or JavaSE-15 if you're using Java 15
-    --           path = "/usr/lib/jvm/java-21-openjdk", -- adjust to your JDK
-    --           default = true,
-    --         },
-    --       },
-    --     },
-    --     compiler = {
-    --       source = "21", -- enable text blocks
-    --       compliance = "21",
-    --       target = "21",
-    --     },
-    --   },
-    -- },
-  },
+  -- jdtls = {
+  --   root_dir = vim.fs.dirname(
+  --     vim.fs.find({ "gradlew", ".git", "mvnw" }, { upward = true })[1]
+  --   ),
+  --   -- settings = {
+  --   --   java = {
+  --   --     configuration = {
+  --   --       runtimes = {
+  --   --         {
+  --   --           name = "JavaSE-21", -- or JavaSE-15 if you're using Java 15
+  --   --           path = "/usr/lib/jvm/java-21-openjdk", -- adjust to your JDK
+  --   --           default = true,
+  --   --         },
+  --   --       },
+  --   --     },
+  --   --     compiler = {
+  --   --       source = "21", -- enable text blocks
+  --   --       compliance = "21",
+  --   --       target = "21",
+  --   --     },
+  --   --   },
+  --   -- },
+  -- },
   ltex = {
     filetypes = {
       "bib",
@@ -104,3 +107,13 @@ function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
   opts.border = "rounded"
   return orig_util_open_floating_preview(contents, syntax, opts, ...)
 end
+
+-- especially setup config
+vim.lsp.config("java", {})
+-- setup jdtls properly
+vim.api.nvim_create_autocmd("Filetype", {
+  pattern = "java",
+  callback = function()
+    require("jdtls.config_setup"):setup()
+  end,
+})

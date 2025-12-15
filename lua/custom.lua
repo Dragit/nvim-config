@@ -61,15 +61,16 @@ autocmd("User", {
   end,
 })
 
--- #################### c coding stuff #########################################
+-- ########################## Tab Width ########################################
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c" }, -- Dateitypen bei denen ich 4 Indents will
+  pattern = { "sql", "c", "java", "tex" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
     vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
     vim.opt_local.shiftwidth = 4 -- Indentation level for C files
   end,
 })
 
+-- #################### c coding stuff #########################################
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "make" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
@@ -81,14 +82,6 @@ vim.api.nvim_create_autocmd("FileType", {
 -- enable c syntax highlighting for header files
 vim.g.c_syntax_for_h = 1
 
--- #################### java coding stuff ######################################
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "java" },
-  callback = function()
-    vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
-    vim.opt_local.shiftwidth = 4 -- Indentation level for C files
-  end,
-})
 -- ############### markdown/text stuff #########################################
 
 -- set indentation for markdown files

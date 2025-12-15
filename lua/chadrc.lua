@@ -3,7 +3,6 @@
 
 ---@type ChadrcConfig
 local M = {}
-
 M.base46 = {
   theme = "doomchad",
   hl_override = {
@@ -20,6 +19,7 @@ M.base46 = {
     -- change Commment color to be more readable
     -- alte farben: "#5699AF", "#666f77"
     ["@comment"] = { fg = "#26898F" },
+    ["@lsp.type.modifier.java"] = { link = "@keyword" },
   },
   theme_toggle = { "doomchad", "one_light" },
 }
@@ -44,6 +44,9 @@ M.mason = {
     "alex",
     "clangd",
     "python-lsp-server",
+    "sqls",
+    -- "java-test", -- nvim-dap for java
+    -- "java-debug-adapter", -- nvim-dap for java
     --  markdownlint
   },
 }

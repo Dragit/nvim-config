@@ -28,6 +28,31 @@ return {
       require "configs.lspconfig"
     end,
   },
+  -- ############################ Java #####################################
+  {
+    "mfussenegger/nvim-jdtls",
+    dependencies = {
+      -- "nvim-dap",
+    },
+  },
+  -- {
+  --   "mfussenegger/nvim-dap",
+  --   dependencies = {
+  --     "rcarriga/nvim-dap-ui",
+  --     -- virtual text for the debugger
+  --     {
+  --       "theHamsta/nvim-dap-virtual-text",
+  --       opts = {},
+  --     },
+  --   },
+  -- },
+  -- {
+  --   "rcarriga/nvim-dap-ui",
+  -- },
+  -- {
+  --   "theHamsta/nvim-dap-virtual-text",
+  -- },
+  -- #######################################################################
   {
     "lewis6991/gitsigns.nvim",
     opts = {
@@ -63,10 +88,9 @@ return {
   },
   -- unused because it moved to chadrc.lua
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = {},
   },
-
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {

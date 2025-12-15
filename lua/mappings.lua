@@ -27,6 +27,16 @@ end, {
   silent = true,
 })
 
+-- ###################### LSP ###############################################
+-- recreate LSP code action
+map("n", "<leader>ca", function()
+  vim.lsp.buf.code_action()
+end, {
+  desc = "LSP Code Action",
+  noremap = true,
+  silent = true,
+})
+
 -- ###################### Conform ###########################################
 -- Toggle flag
 vim.g.format_on_save_enabled = true
