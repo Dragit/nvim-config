@@ -183,6 +183,23 @@ autocmd("VimLeavePre", {
 
 -- Make syntax highlihgting of man pagees work properly
 dofile(vim.g.base46_cache .. "syntax")
+-- fix for regression
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      if
+        vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype == "man"
+      then
+        -- Feed Shift-K twice
+        vim.api.nvim_feedkeys(
+          vim.api.nvim_replace_termcodes("KK", true, false, true),
+          "n",
+          false
+        )
+      end
+    end
+  end,
+})
 -- INFO: deprecated, see above
 -- autocommand for reapplying the theme upon man page opening
 -- vim.api.nvim_create_autocmd("FileType", {
