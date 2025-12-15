@@ -90,21 +90,32 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
-  end,
-})
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "tex" },
-  callback = function()
-    vim.opt_local.tabstop = 4
-    vim.opt_local.shiftwidth = 4
+    vim.keymap.set("i", "$", "$$<Left>", { buffer = true })
   end,
 })
 
--- Aktiviere linebreak für Text- und Markdown-Dateien
+-- Aktiviere line break für Text- und Markdown-Dateien
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "text", "markdown", "tex" }, -- Dateitypen, für die linebreak aktiviert werden soll
-  callback = function()
-    vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
+  pattern = { "text", "markdown", "tex" }, -- Dateitypen, für die line break aktiviert werden soll
+  callback = function(event)
+    local ft = event.match
+    local cfg = vim.api.nvim_win_get_config(0)
+    if cfg.relative == "" then
+      vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
+      vim.opt.spelllang = {
+        "de_20",
+        "en_us",
+      }
+      vim.opt.spellsuggest = {
+        "best",
+        12,
+      }
+      vim.opt.spellfile = vim.fn.expand "~/.config/nvim/spell/de.utf-8.add"
+      if ft == "markdown" or ft == "tex" then
+        vim.opt.spell = true
+        vim.opt_local.spell = true
+      end
+    end
   end,
 })
 
@@ -128,6 +139,33 @@ vim.api.nvim_create_autocmd("User", {
         highlight MarkviewIcon6 guifg=#ecbe7b guibg=#32363e
         ]]
     end)
+  end,
+})
+
+-- set conceallevel=0 everywhere, just to be sure when markview is loaded
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+  callback = function(event)
+    local buffer = event.buf
+    ---@type string[]
+    local mkv_b = { "markdown" }
+
+    --- If `markview.nvim` is loaded fetch the configuration option for filetypes.
+    if package.loaded["markview.spec"] then
+      mkv_b = package.loaded["markview.spec"].get(
+        { "preview", "filetypes" },
+        { fallback = {} }
+      )
+    end
+
+    if vim.list_contains(mkv_b, vim.bo[buffer].ft) == false then
+      ---@type integer[]
+      local wins = vim.fn.win_findbuf(buffer)
+
+      --- 'conceallevel' is a window option, so we must apply it to every window that is showing this buffer.
+      for _, win in ipairs(wins) do
+        vim.wo[win].conceallevel = 0
+      end
+    end
   end,
 })
 

@@ -1,4 +1,18 @@
 return {
+  -- add utf-8 code completion support
+  {
+    "hrsh7th/nvim-cmp",
+    opts = function(_, opts)
+      -- iterate sources and modify the buffer source
+      for _, source in ipairs(opts.sources) do
+        if source.name == "buffer" then
+          source.option = source.option or {}
+          -- THIS is where keyword_pattern belongs
+          source.option.keyword_pattern = [[\k\+]]
+        end
+      end
+    end,
+  },
   {
     "stevearc/conform.nvim",
     event = "BufWritePre", -- uncomment for format on save
@@ -114,6 +128,7 @@ return {
         "tmux",
         "tsx",
         "yaml",
+        "latex",
         "git_config",
         "git_rebase",
         "gitattributes",
@@ -168,14 +183,37 @@ return {
       -- Set up the plugin
       require("markview").setup(opts)
     end,
+
     opts = {
       preview = {
         modes = { "n", "no", "c", "i" },
         linewise_hybrid_mode = true,
         hybrid_modes = { "n", "i" },
         debounce = 70,
-      },
 
+        callbacks = {
+          on_attach = function(_, wins)
+            for _, win in ipairs(wins) do
+              vim.wo[win].conceallevel = 0
+            end
+          end,
+          on_enable = function(_, wins)
+            for _, win in ipairs(wins) do
+              vim.wo[win].conceallevel = 3
+            end
+          end,
+          on_mode_change = function(_, wins)
+            for _, win in ipairs(wins) do
+              vim.wo[win].conceallevel = 0
+            end
+          end,
+          on_hybrid_enable = function(_, wins)
+            for _, win in ipairs(wins) do
+              vim.wo[win].conceallevel = 0
+            end
+          end,
+        },
+      },
       markdown_inline = {
         enable = false,
       },

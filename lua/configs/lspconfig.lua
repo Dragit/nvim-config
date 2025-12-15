@@ -83,12 +83,20 @@ local servers = {
       "rmd",
       "context",
       "mail",
-      "text",
+      -- "text",
     },
     settings = {
       ltex = {
         language = "en-US", -- "de-DE" for German
         checkFrequency = "save",
+        additionalRules = {
+          -- enablePickyRules = true,
+          motherTongue = "de-DE",
+        },
+        disabledRules = {
+          ["en-US"] = { "MORFOLOGIK_RULE_EN_US" },
+          ["de-DE"] = { "GERMAN_SPELLER_RULE", "BISSTRICH" },
+        },
       },
     },
   },
