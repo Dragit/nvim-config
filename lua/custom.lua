@@ -101,23 +101,29 @@ vim.api.nvim_create_autocmd("FileType", {
     local ft = event.match
     local cfg = vim.api.nvim_win_get_config(0)
     if cfg.relative == "" then
-      vim.opt.linebreak = true -- Aktiviert Zeilenumbrüche
-      vim.opt.spelllang = {
+      vim.opt_local.linebreak = true -- Aktiviert Zeilenumbrüche
+      vim.opt_local.spelllang = {
         "de_20",
         "en_us",
       }
-      vim.opt.spellsuggest = {
+      vim.opt_local.spellsuggest = {
         "best",
         12,
       }
       vim.opt.spellfile = vim.fn.expand "~/.config/nvim/spell/de.utf-8.add"
       if ft == "markdown" or ft == "tex" then
-        vim.opt.spell = true
         vim.opt_local.spell = true
       end
     end
   end,
 })
+
+-- disable spell for terminal
+-- currently unneded!
+-- autocmd("FileType", {
+--   pattern = { "NvTerm_sp", "NvTerm_float", "NvTerm_vsp" },
+--   callback = function() end,
+-- })
 
 vim.api.nvim_create_autocmd("User", {
   pattern = "MarkviewEnable", -- ← fires after markview loads its highlights
