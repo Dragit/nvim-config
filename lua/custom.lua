@@ -13,6 +13,30 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
   end,
 })
+-- ################################ nvim/cmp ####################################
+-- add custom sources here:
+-- local cmp = require "cmp"
+-- cmp.setup.filetype({ "sql" }, {
+--   { name = "vim-dadbod-completion" },
+--   { name = "buffer" },
+-- })
+-- Dynamically add vim-dadbod-completion for SQL files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "sql", "mysql", "plsql" },
+  callback = function()
+    -- Load vim-dadbod-completion if not already loaded
+    pcall(require, "vim-dadbod-completion")
+
+    local cmp = require "cmp"
+    -- Update cmp sources for this buffer
+    cmp.setup.buffer {
+      sources = {
+        { name = "vim-dadbod-completion" },
+        { name = "buffer" },
+      },
+    }
+  end,
+})
 -- ################################ Folds ######################################
 -- Silently load view
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
@@ -219,3 +243,61 @@ vim.api.nvim_create_autocmd("VimEnter", {
 --   end,
 --   once = true,
 -- })
+
+-- ############### DB_UI/SQL ###################################################
+-- check if buffer was found by dbui
+local function has_dbui_save_hook(buf)
+  local autocmds = vim.api.nvim_get_autocmds {
+    event = "BufWritePost",
+    buffer = buf,
+  }
+
+  for _, ac in ipairs(autocmds) do
+    if ac.group_name == "db_ui_query" then
+      return true
+    end
+  end
+
+  return false
+end
+-- Set up DBUI mappings when DBUI opens
+local dbui_map_group =
+  vim.api.nvim_create_augroup("DBUIQueryKeymaps", { clear = false })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "sql",
+  callback = function(ev)
+    local buf = ev.buf
+    vim.api.nvim_set_keymap("n", "<leader>F", ":DBUIFindBuffer<CR>", {
+      desc = "try to open buffer with DBUI",
+      noremap = true,
+    })
+
+    -- Only attach if DBUI buffer (or when it becomes one)
+    vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+      buffer = buf, -- buffer-local
+      group = dbui_map_group,
+      once = false,
+      callback = function()
+        -- Check if DBUI has initialized this buffer
+        if not has_dbui_save_hook(buf) then
+          return
+        end
+
+        local opts = { buffer = buf, silent = true }
+
+        vim.keymap.set("n", "<leader>S", "<Plug>(DBUI_ExecuteQuery)", opts)
+        vim.keymap.set("v", "<leader>S", "<Plug>(DBUI_ExecuteQuery)", opts)
+        vim.keymap.set(
+          "n",
+          "<leader>E",
+          "<Plug>(DBUI_EditBindParameters)",
+          opts
+        )
+        vim.keymap.set("n", "<leader>W", "<Plug>(DBUI_SaveQuery)", opts)
+
+        -- remove this autocmd after it worked
+        vim.api.nvim_clear_autocmds { group = dbui_map_group, buffer = buf }
+      end,
+    })
+  end,
+})

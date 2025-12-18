@@ -100,7 +100,7 @@ local servers = {
       },
     },
   },
-  sqls = {},
+  --  sqls = {},
   sqruff = {},
 }
 
