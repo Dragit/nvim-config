@@ -2,13 +2,14 @@ local options = {
   formatters_by_ft = {
     c = { lsp_format = "fallback" },
     cpp = { lsp_format = "fallback" },
-    lua = { "stylua" },
     css = { "prettier" },
     html = { "prettier" },
     javascript = { "prettier" },
+    json = { "prettier" },
+    lua = { "stylua" },
+    sql = { lsp_format = "fallback" },
     typescript = { "prettier" },
     typescriptreact = { "prettier" },
-    json = { "prettier" },
     -- add more types if needed
   },
 
