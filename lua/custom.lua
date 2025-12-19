@@ -1,4 +1,5 @@
 local autocmd = vim.api.nvim_create_autocmd
+local map = vim.keymap.set
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "*" }, -- Hier wird die colorcolumn aktiviert
   callback = function()
@@ -245,7 +246,76 @@ vim.api.nvim_create_autocmd("VimEnter", {
 -- })
 
 -- ############### DB_UI/SQL ###################################################
--- check if buffer was found by dbui
+
+-- helper function setting up "setup database keybind in sql buffers"
+local function map_setup_database(buf)
+  map("n", "<leader>sd", function()
+    local input =
+      vim.fn.input("enter cmd to open database: ", "", "shellcmdline")
+    if input == "" then
+      print "no input, aborting..."
+      return
+    end
+    -- init Terminal
+    require("nvchad.term").runner {
+      pos = "sp",
+      id = "htoggleTerm",
+      --      cmd = input,
+      cmd = "clear",
+      clear_cmd = "",
+    }
+    require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" }
+    vim.api.nvim_feedkeys(
+      vim.api.nvim_replace_termcodes("<Esc>", true, false, true),
+      "n",
+      false
+    )
+    -- setub vim-dadbod-completion
+    -- currently broken with duckDB due to database locks!
+    local inputWords = {}
+    for word in string.gmatch(input, "[^%s]+") do
+      table.insert(inputWords, word)
+    end
+    -- abort if string is malformed
+    if #inputWords < 2 then
+      print "dbs cmd should be of the form: <dbms> <URL>"
+      return
+    end
+    vim.api.nvim_buf_set_var(
+      buf,
+      "db",
+      table.concat(inputWords, ":", 1, 2)
+        .. table.concat(inputWords, "", 3, #inputWords)
+    )
+    -- setup autocommand to send entire buffer on save
+    vim.api.nvim_create_autocmd("BufWritePost", {
+      buffer = buf,
+
+      callback = function()
+        require("nvchad.term").runner {
+          pos = "sp",
+          id = "htoggleTerm",
+          cmd = table.concat(
+            vim.api.nvim_buf_get_lines(
+              buf,
+              0,
+              vim.api.nvim_buf_line_count(buf),
+              false
+            ),
+            "\n"
+          ) .. ";\n.quit",
+          clear_cmd = input .. "\n",
+        }
+      end,
+    })
+  end, {
+    buffer = buf,
+    desc = "setup databank",
+    noremap = true,
+  })
+end
+
+-- true if buffer was found by dbui
 local function has_dbui_save_hook(buf)
   local autocmds = vim.api.nvim_get_autocmds {
     event = "BufWritePost",
@@ -260,6 +330,7 @@ local function has_dbui_save_hook(buf)
 
   return false
 end
+
 -- Set up DBUI mappings when DBUI opens
 local dbui_map_group =
   vim.api.nvim_create_augroup("DBUIQueryKeymaps", { clear = false })
@@ -267,12 +338,15 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "sql",
   callback = function(ev)
     local buf = ev.buf
-    vim.api.nvim_set_keymap("n", "<leader>F", ":DBUIFindBuffer<CR>", {
+    -- set keymap to this buffer
+    vim.api.nvim_buf_set_keymap(buf, "n", "<leader>F", ":DBUIFindBuffer<CR>", {
       desc = "try to open buffer with DBUI",
       noremap = true,
     })
 
-    -- Only attach if DBUI buffer (or when it becomes one)
+    map_setup_database(buf)
+
+    -- autocmd to fix creation of mappings when using `DBUIFindBuffer`
     vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
       buffer = buf, -- buffer-local
       group = dbui_map_group,
@@ -285,15 +359,10 @@ vim.api.nvim_create_autocmd("FileType", {
 
         local opts = { buffer = buf, silent = true }
 
-        vim.keymap.set("n", "<leader>S", "<Plug>(DBUI_ExecuteQuery)", opts)
-        vim.keymap.set("v", "<leader>S", "<Plug>(DBUI_ExecuteQuery)", opts)
-        vim.keymap.set(
-          "n",
-          "<leader>E",
-          "<Plug>(DBUI_EditBindParameters)",
-          opts
-        )
-        vim.keymap.set("n", "<leader>W", "<Plug>(DBUI_SaveQuery)", opts)
+        map("n", "<leader>S", "<Plug>(DBUI_ExecuteQuery)", opts)
+        map("v", "<leader>S", "<Plug>(DBUI_ExecuteQuery)", opts)
+        map("n", "<leader>E", "<Plug>(DBUI_EditBindParameters)", opts)
+        map("n", "<leader>W", "<Plug>(DBUI_SaveQuery)", opts)
 
         -- remove this autocmd after it worked
         vim.api.nvim_clear_autocmds { group = dbui_map_group, buffer = buf }

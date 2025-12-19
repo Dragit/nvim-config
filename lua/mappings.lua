@@ -132,6 +132,7 @@ map("n", "<Leader>cf", function()
 end, { desc = "format code using lsp", noremap = true, silent = true })
 
 -- ###################### SQL ##################################################
+-- not entirely sql specific but created for sql use
 -- Send a single line to the terminal
 map("n", "<leader>sl", function()
   require("nvchad.term").runner {
@@ -176,59 +177,5 @@ map("v", "<leader>st", function()
   }
 end, {
   desc = "Send visual selection terminal",
-  noremap = true,
-})
-
-map("n", "<leader>sd", function()
-  local buf = vim.api.nvim_get_current_buf()
-  local input = vim.fn.input("enter cmd to open database: ", "", "shellcmdline")
-  if input == "" then
-    print "no input, aborting..."
-    return
-  end
-  -- init Terminal
-  require("nvchad.term").runner {
-    pos = "sp",
-    id = "htoggleTerm",
-    --      cmd = input,
-    cmd = "clear",
-    clear_cmd = "",
-  }
-  require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" }
-  -- setub vim-dadbod-completion
-  -- currently broken with duckDB due to database locks!
-  local inputWords = {}
-  for word in string.gmatch(input, "[^%s]+") do
-    table.insert(inputWords, word)
-  end
-  vim.api.nvim_buf_set_var(
-    buf,
-    "db",
-    table.concat(inputWords, ":", 1, 2)
-      .. table.concat(inputWords, "", 3, #inputWords)
-  )
-  -- setup autocommand to send entire buffer on save
-  vim.api.nvim_create_autocmd("BufWritePost", {
-    buffer = buf,
-
-    callback = function()
-      require("nvchad.term").runner {
-        pos = "sp",
-        id = "htoggleTerm",
-        cmd = table.concat(
-          vim.api.nvim_buf_get_lines(
-            buf,
-            0,
-            vim.api.nvim_buf_line_count(buf),
-            false
-          ),
-          "\n"
-        ) .. ";\n.quit",
-        clear_cmd = input .. "\n",
-      }
-    end,
-  })
-end, {
-  desc = "setup databank",
   noremap = true,
 })
