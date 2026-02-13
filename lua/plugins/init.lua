@@ -135,6 +135,8 @@ return {
         "gitignore",
         "ssh_config",
         "sql",
+        "kdl",
+        "xml",
       },
     },
   },
