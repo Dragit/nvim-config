@@ -73,6 +73,11 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end,
 })
 
+-- keybind, to activate lsp code formatting
+map("n", "<Leader>cf", function()
+  require("conform").format { async = true, lsp_fallback = true }
+end, { desc = "format buffer using conform", noremap = true, silent = true })
+
 -- ###################### JavaScript ###########################################
 -- Key mapping to generate JSDoc comments
 map("n", "<leader>jd", ":JsDoc<CR>", {
@@ -125,11 +130,6 @@ vim.api.nvim_create_autocmd("FileType", {
     })
   end,
 })
-
--- keybind, to activate lsp code formatting
-map("n", "<Leader>cf", function()
-  vim.lsp.buf.format { async = false }
-end, { desc = "format code using lsp", noremap = true, silent = true })
 
 -- ###################### SQL ##################################################
 -- not entirely sql specific but created for sql use
