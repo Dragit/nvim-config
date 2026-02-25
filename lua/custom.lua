@@ -14,6 +14,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
   end,
 })
+
 -- ################################ nvim/cmp ####################################
 -- add custom sources here:
 -- local cmp = require "cmp"
@@ -39,39 +40,115 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 -- ################################ Folds ######################################
--- Silently load view
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter" }, {
-  command = "silent! loadview",
-})
--- enable code folding via LSP/treesitter and disable for haskell
--- Function to set folding based on LSP or fallback to Treesitter
-local function set_folds()
-  if vim.lsp.get_clients() and next(vim.lsp.get_clients()) then
-    -- Use LSP for folding
-    vim.opt_local.foldexpr = "v:lua.vim.lsp.foldexpr()"
-  elseif vim.treesitter then
-    -- Fallback to Treesitter for folding
-    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-  else
-    -- Default to no folding
-    vim.opt_local.foldmethod = "manual"
-  end
-end
-vim.opt.foldmethod = "expr" -- Set fold method to expression
-vim.opt.foldlevel = 99 -- Open all folds by default
-vim.opt.foldtext = "" -- Customize fold text if needed
-vim.api.nvim_create_augroup("Folds", { clear = true })
-vim.api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "BufEnter" }, {
-  group = "Folds",
+vim.o.viewoptions = "folds"
+local folds = vim.api.nvim_create_augroup("folds", { clear = true })
+
+-- open all folds
+vim.o.foldlevel = 99
+-- empty to show text of top line!
+vim.opt.foldtext = ""
+-- Save view
+autocmd("BufWritePost", {
+  group = folds,
   callback = function()
-    if vim.bo.filetype ~= "haskell" then
+    vim.cmd "silent! mkview"
+  end,
+})
+
+-- Decide folding engine
+local function set_folds()
+  if vim.bo.filetype == "haskell" then
+    vim.opt_local.foldmethod = "manual"
+    return
+  end
+  local clients = vim.lsp.get_clients { bufnr = 0 }
+  for _, client in ipairs(clients) do
+    if
+      client.server_capabilities
+      and client.server_capabilities.foldingRangeProvider
+    then
+      vim.opt_local.foldmethod = "expr"
+      vim.opt_local.foldexpr = "v:lua.vim.lsp.foldexpr()"
+      return
+    end
+  end
+
+  -- Treesitter fallback
+  if pcall(vim.treesitter.get_parser, 0) then
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+    return
+  end
+
+  -- manual fallback if no lsp and no treeseitter
+  vim.opt_local.foldmethod = "manual"
+end
+
+-- Load view
+autocmd("BufWinEnter", {
+  group = folds,
+  callback = function()
+    if vim.wo.diff then
+      return
+    end
+    set_folds()
+    vim.cmd "silent! loadview"
+    vim.cmd "normal! gg"
+  end,
+})
+
+-- Re-evaluate when LSP attaches
+autocmd("LspAttach", {
+  group = folds,
+  callback = function(args)
+    if vim.wo.diff then
+      return
+    end
+    if args.buf == vim.api.nvim_get_current_buf() then
       set_folds()
-    else
-      -- Default to no folding
-      vim.opt_local.foldmethod = "manual"
     end
   end,
 })
+
+-- fix folds not recomputing, by wrapping all fold keymaps
+local function fold_keymap(lhs, safe, opts)
+  -- erly return if there is no fold
+  if safe ~= nil and not safe then
+    local current_line = vim.fn.line "."
+    local fold_closed = vim.fn.foldclosed(current_line)
+    if fold_closed == -1 then
+      return
+    end
+  end
+
+  local options = { noremap = true, silent = true }
+  if opts then
+    options = vim.tbl_extend("force", options, opts)
+  end
+
+  vim.keymap.set({ "n", "x", "o" }, lhs, function()
+    local method = vim.o.foldmethod
+    -- vim.print("refresh by ressetting " .. method)
+    -- Force fold recomputation
+    vim.cmd("set foldmethod=" .. method)
+    -- Execute the fold key without recursion
+    vim.cmd("normal! " .. lhs)
+  end, options)
+end
+
+-- Fold movement
+fold_keymap "]z"
+fold_keymap "[z"
+
+-- Fold operations
+fold_keymap("za", false)
+fold_keymap("zo", false)
+fold_keymap("zO", false)
+fold_keymap("zc", false)
+fold_keymap("zC", false)
+fold_keymap "zR"
+fold_keymap "zM"
+
 -- #################### tmux after start #######################################
 autocmd("User", {
   pattern = "LazyDone",
@@ -88,14 +165,14 @@ autocmd("User", {
 
 -- ########################## Tab Width ########################################
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "sql", "c", "java", "tex" }, -- Dateitypen bei denen ich 4 Indents will
+  pattern = { "markdown", "html", "css", "lua", "haskell" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
-    vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
-    vim.opt_local.shiftwidth = 4 -- Indentation level for C files
+    vim.opt_local.tabstop = 2
+    vim.opt_local.shiftwidth = 2
   end,
 })
 
--- #################### c coding stuff #########################################
+-- ########################## make #############################################
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "make" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
@@ -107,7 +184,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- enable c syntax highlighting for header files
 vim.g.c_syntax_for_h = 1
 
--- ############### markdown/text stuff #########################################
+-- ################### markdown/text stuff #####################################
 
 -- set indentation for markdown files
 vim.api.nvim_create_autocmd("FileType", {
@@ -215,7 +292,7 @@ autocmd("VimLeavePre", {
 -- Make syntax highlihgting of man pagees work properly
 dofile(vim.g.base46_cache .. "syntax")
 -- fix for regression
-vim.api.nvim_create_autocmd("VimEnter", {
+autocmd("VimEnter", {
   callback = function()
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
       if
@@ -229,6 +306,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
         )
       end
     end
+  end,
+})
+autocmd("FileType", {
+  pattern = "man",
+  callback = function()
+    vim.opt.signcolumn = "yes:1"
   end,
 })
 -- INFO: deprecated, see above
