@@ -2,6 +2,10 @@ require "nvchad.mappings"
 
 local map = vim.keymap.set
 
+-- align in nvim
+-- example with `=`
+-- :! column -t -s= -o=
+
 map("i", "jk", "<ESC>")
 
 -- reIntroduce old mappings for reading all diagnostic text, not only lsp
