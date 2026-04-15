@@ -34,7 +34,6 @@ return {
     },
   },
 
-  -- These are some examples, uncomment them if you want to see them work!
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -42,6 +41,14 @@ return {
       require "configs.lspconfig"
     end,
   },
+  -- whitespace
+  {
+    "ntpeters/vim-better-whitespace",
+    lazy = false,
+    config = function() end,
+    -- highlightgroup added in '$HOME/.config/nvim/lua/chadrc.lua'
+  },
+
   -- ############################ Java #####################################
   {
     "mfussenegger/nvim-jdtls",

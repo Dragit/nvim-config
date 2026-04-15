@@ -18,8 +18,13 @@ M.base46 = {
     DiffAddAsDelete = { fg = "NONE", bg = { "red", "darker_black", 77 } },
     -- change Commment color to be more readable
     -- alte farben: "#5699AF", "#666f77"
+    ["Comment"] = { fg = "#26898F" },
     ["@comment"] = { fg = "#26898F" },
     ["@lsp.type.modifier.java"] = { link = "@keyword" },
+  },
+  hl_add = {
+    -- vim-better-whitespace
+    ["ExtraWhitespace"] = { bg = "red" },
   },
   theme_toggle = { "doomchad", "one_light" },
 }

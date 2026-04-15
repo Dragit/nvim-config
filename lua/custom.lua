@@ -15,7 +15,7 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- ################################ nvim/cmp ####################################
+-- ################################ nvim/cmp ###################################
 -- add custom sources here:
 -- local cmp = require "cmp"
 -- cmp.setup.filetype({ "sql" }, {
@@ -39,6 +39,15 @@ vim.api.nvim_create_autocmd("FileType", {
     }
   end,
 })
+-- ########################## Trailing Whitespace ##############################
+-- currently using vim-better-whitespace
+-- vim.api.nvim_create_autocmd("BufWinEnter", {
+--   pattern = "*",
+--   command = [[
+--     syntax clear TrailingWhitespace |
+--     syntax match TrailingWhitespace "\s\+$\| \+\ze\t\+"
+--   ]],
+-- })
 -- ################################ Folds ######################################
 vim.o.viewoptions = "folds"
 local folds = vim.api.nvim_create_augroup("folds", { clear = true })
