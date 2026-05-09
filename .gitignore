@@ -1,4 +1,4 @@
 .stignore
 .stfolder
 .stversions
-.stfolder.*
+.stfolder*
