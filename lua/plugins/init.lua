@@ -74,6 +74,41 @@ return {
   --   "theHamsta/nvim-dap-virtual-text",
   -- },
   -- #######################################################################
+
+  -- ############################ Lean #####################################
+  {
+    "Julian/lean.nvim",
+    event = { "BufReadPre *.lean", "BufNewFile *.lean" },
+
+    dependencies = {
+      -- optional dependencies:
+
+      -- 'nvim-telescope/telescope.nvim', -- for Lean-specific pickers
+      -- 'andymass/vim-matchup',          -- for enhanced % motion behavior
+      -- 'andrewradev/switch.vim',        -- for switch support
+      -- 'tomtom/tcomment_vim',           -- for commenting
+    },
+
+    ---@type lean.Config
+    opts = { -- see the manual for full configuration options
+      mappings = true,
+    },
+  },
+  -- #######################################################################
+
+  -- ############################ Lua ######################################
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+  -- #######################################################################
   {
     "lewis6991/gitsigns.nvim",
     opts = {
@@ -114,10 +149,13 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter",
+    lazy = false,
+    build = ":TSUpdate",
     opts = {
       ensure_installed = {
         "vim",
         "lua",
+        "luadoc",
         "vimdoc",
         "html",
         "css",
@@ -234,99 +272,9 @@ return {
   {
     "OXY2DEV/markview.nvim",
     lazy = false,
-    config = function(plugin, opts)
-      --
-
-      -- Force markview.nvim to be sourced before everything else
-      vim.opt.rtp:prepend(plugin.dir)
-
-      -- Set up the plugin
-      require("markview").setup(opts)
-    end,
-
-    opts = {
-      preview = {
-        modes = { "n", "no", "c", "i" },
-        linewise_hybrid_mode = true,
-        hybrid_modes = { "n", "i" },
-        debounce = 70,
-
-        callbacks = {
-          on_attach = function(_, wins)
-            for _, win in ipairs(wins) do
-              vim.wo[win].conceallevel = 0
-            end
-          end,
-          on_enable = function(_, wins)
-            for _, win in ipairs(wins) do
-              vim.wo[win].conceallevel = 3
-            end
-          end,
-          on_mode_change = function(_, wins)
-            for _, win in ipairs(wins) do
-              vim.wo[win].conceallevel = 0
-            end
-          end,
-          on_hybrid_enable = function(_, wins)
-            for _, win in ipairs(wins) do
-              vim.wo[win].conceallevel = 0
-            end
-          end,
-        },
-      },
-      markdown_inline = {
-        enable = false,
-      },
-
-      highlight_groups = {},
-      html = {
-        enable = false,
-      },
-      latex = {
-        enable = true,
-
-        blocks = {
-          enable = false,
-        },
-        commands = {},
-        escapes = {},
-        fonts = {},
-        inlines = {},
-        parenthesis = {},
-        subscripts = {},
-        superscripts = {},
-        symbols = {},
-        texts = {},
-      },
-      bullet = {
-        enable = false,
-      },
-      markdown = {
-        tables = {
-          enable = true,
-        },
-        metadata_minus = { enable = false },
-        horizontal_rules = {},
-        headings = {
-          enable = false,
-        },
-        code_blocks = {
-          label_direction = "left",
-          sign = false,
-        },
-        block_quotes = {},
-        list_items = { enable = false },
-        metadata_plus = {},
-        reference_definitions = { enable = false },
-      },
-      typst = {
-        enable = false,
-      },
-      yaml = {
-        enable = false,
-      },
-    },
+    opts = require "configs.markview",
   },
+
   -- {
   --   "MeanderingProgrammer/render-markdown.nvim",
   --   dependencies = {
