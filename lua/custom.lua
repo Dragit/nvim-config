@@ -102,7 +102,7 @@ autocmd("BufWinEnter", {
     end
     set_folds()
     vim.cmd "silent! loadview"
-    vim.cmd "normal! gg"
+    vim.cmd "normal! g'\""
   end,
 })
 
