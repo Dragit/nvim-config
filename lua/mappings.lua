@@ -5,6 +5,29 @@ local map = vim.keymap.set
 -- align in nvim
 -- example with `=`
 -- :! column -t -s= -o=
+vim.keymap.set("v", "<leader>al", function()
+  vim.notify("char to align on: ", vim.log.levels.INFO)
+  local ok, char = pcall(vim.fn.getcharstr)
+  if not ok or char == "" or char == "\n" then
+    vim.notify("align cancelled", vim.log.levels.INFO)
+    return
+  end
+  local esc = vim.fn.shellescape(char)
+  local visualRegion = vim.fn.getregionpos(vim.fn.getpos ".", vim.fn.getpos "v")
+  local cmd = string.format(
+    "%d,%d!column -t -s %s -o %s",
+    visualRegion[1][1][2],
+    visualRegion[#visualRegion][1][2],
+    esc,
+    esc
+  )
+  vim.cmd(cmd)
+  vim.notify "align succesfull"
+end, {
+  desc = "align line with input char",
+  noremap = true,
+  silent = true,
+})
 
 map("i", "jk", "<ESC>")
 
@@ -150,32 +173,34 @@ end, {
 })
 
 -- Send a visual selection to the terminal
+local function getselection()
+  local mode = vim.api.nvim_get_mode().mode
+  local selection = ""
+  if mode == "v" then
+    local s_start = vim.fn.getpos "v"
+    local s_end = vim.fn.getpos "."
+    local lines = vim.fn.getregion(s_start, s_end)
+    selection = table.concat(lines, "\n")
+  elseif mode == "V" then
+    local l_start = vim.fn.line "."
+    local l_end = vim.fn.line "v"
+    local lines = vim.fn.getline(
+      math.min(l_start, l_end), -- smaller value fist
+      math.max(l_start, l_end)
+    )
+    if type(lines) == "string" then
+      lines = { lines }
+    end
+    selection = table.concat(lines, "\n")
+  end
+  return selection
+end
+
 map("v", "<leader>st", function()
   require("nvchad.term").runner {
     pos = "sp",
     id = "htoggleTerm",
-    cmd = function()
-      local mode = vim.api.nvim_get_mode().mode
-      local selection = ""
-      if mode == "v" then
-        local s_start = vim.fn.getpos "v"
-        local s_end = vim.fn.getpos "."
-        local lines = vim.fn.getregion(s_start, s_end)
-        selection = table.concat(lines, "\n")
-      elseif mode == "V" then
-        local l_start = vim.fn.line "."
-        local l_end = vim.fn.line "v"
-        local lines = vim.fn.getline(
-          math.min(l_start, l_end), -- smaller value fist
-          math.max(l_start, l_end)
-        )
-        if type(lines) == "string" then
-          lines = { lines }
-        end
-        selection = table.concat(lines, "\n")
-      end
-      return selection
-    end,
+    cmd = getselection(),
     clear_cmd = "",
   }
 end, {
