@@ -17,9 +17,9 @@ M.base46 = {
     DiffDeleteDim = { fg = "NONE", bg = { "red", "darker_black", 77 } },
     DiffAddAsDelete = { fg = "NONE", bg = { "red", "darker_black", 77 } },
     -- change Commment color to be more readable
-    -- alte farben: "#5699AF", "#666f77"
-    ["Comment"] = { fg = "#26898F" },
-    ["@comment"] = { fg = "#26898F" },
+    -- alte farben: "#5699AF", "#666f77" "#26898F"
+    ["Comment"] = { fg = "#36998F" },
+    ["@comment"] = { fg = "#36998F" },
     ["@lsp.type.modifier.java"] = { link = "@keyword" },
   },
   hl_add = {
