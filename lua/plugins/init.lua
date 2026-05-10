@@ -2,8 +2,12 @@ return {
   -- add utf-8 code completion support
   {
     "hrsh7th/nvim-cmp",
+    dependencies = {
+      "micangl/cmp-vimtex",
+    },
     opts = function(_, opts)
-      -- iterate sources and modify the buffer source
+      local cmp = require "cmp"
+      -- add vimtex completion
       for _, source in ipairs(opts.sources) do
         if source.name == "buffer" then
           source.option = source.option or {}
@@ -11,7 +15,18 @@ return {
           source.option.keyword_pattern = [[\k\+]]
         end
       end
+
+      cmp.setup.filetype("tex", {
+        sources = cmp.config.sources {
+          { name = "vimtex" },
+          { name = "buffer", option = { keyword_pattern = [[\k\+]] } },
+        },
+      })
     end,
+  },
+  -- vimtex completion
+  {
+    "micangl/cmp-vimtex",
   },
   {
     "stevearc/conform.nvim",
@@ -174,6 +189,7 @@ return {
         "tsx",
         "yaml",
         "latex",
+        "bibtex",
         "git_config",
         "git_rebase",
         "gitattributes",
@@ -182,6 +198,8 @@ return {
         "sql",
         "kdl",
         "xml",
+        "regex",
+        "regex",
       },
     },
   },
@@ -273,6 +291,15 @@ return {
     "OXY2DEV/markview.nvim",
     lazy = false,
     opts = require "configs.markview",
+  },
+  {
+    "lervag/vimtex",
+    lazy = false, -- we don't want to lazy load VimTeX
+    -- tag = "v2.15", -- uncomment to pin to a specific release
+    dependencies = {
+      "folke/which-key.nvim",
+    },
+    init = require "configs.vimtex",
   },
 
   -- {
