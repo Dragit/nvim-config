@@ -102,7 +102,15 @@ autocmd("BufWinEnter", {
     end
     set_folds()
     vim.cmd "silent! loadview"
-    vim.cmd "normal! g'\""
+    local line = vim.fn.line "'\""
+    if
+      line > 1
+      and line <= vim.fn.line "$"
+      and vim.bo.filetype ~= "commit"
+      and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
+    then
+      vim.cmd 'normal! g`"'
+    end
   end,
 })
 
