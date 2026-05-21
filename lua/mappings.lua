@@ -160,7 +160,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- ###################### SQL ##################################################
 -- not entirely sql specific but created for sql use
 -- Send a single line to the terminal
-map("n", "<leader>sl", function()
+map("n", "<leader>ts", function()
   require("nvchad.term").runner {
     pos = "sp",
     id = "htoggleTerm",
@@ -196,7 +196,7 @@ local function getselection()
   return selection
 end
 
-map("v", "<leader>st", function()
+map("v", "<leader>ts", function()
   require("nvchad.term").runner {
     pos = "sp",
     id = "htoggleTerm",
