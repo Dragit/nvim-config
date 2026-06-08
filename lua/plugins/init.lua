@@ -200,6 +200,7 @@ return {
         "xml",
         "regex",
         "regex",
+        "lean",
       },
     },
   },
