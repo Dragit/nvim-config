@@ -120,6 +120,8 @@ return {
         -- See the configuration section for more details
         -- Load luvit types when the `vim.uv` word is found
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+        -- Load plugin types when the `vim.uv` word is found
+        { path = "$HOME/.local/share/nvim/lazy", words = { "vim%.uv" } },
       },
     },
   },
