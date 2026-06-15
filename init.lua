@@ -1,5 +1,7 @@
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 vim.g.mapleader = " "
+-- localleader for lean.nvim
+vim.g.maplocalleader = "  "
 
 -- bootstrap lazy and all plugins
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
@@ -57,15 +59,3 @@ require "lua_snippets.react"
 require("luasnip.loaders.from_vscode").lazy_load {
   paths = { "./lua/lua_snippets/vsCodeStyle" },
 }
-
---fix anoying luasnip issue
-vim.api.nvim_create_autocmd("InsertLeave", {
-  callback = function()
-    if
-      require("luasnip").session.current_nodes[vim.api.nvim_get_current_buf()]
-      and not require("luasnip").session.jump_active
-    then
-      require("luasnip").unlink_current()
-    end
-  end,
-})
