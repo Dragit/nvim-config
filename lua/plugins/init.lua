@@ -8,6 +8,20 @@ return {
     opts = function(_, opts)
       local cmp = require "cmp"
       -- add vimtex completion
+      cmp.setup.filetype("tex", {
+        sources = cmp.config.sources {
+          -- new sources
+          { name = "vimtex" },
+          { name = "buffer", option = { keyword_pattern = [[\k\+]] } },
+          --- old sources
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "nvim_lua" },
+          { name = "async_path" },
+        },
+      })
+      -- autocomplete unicode
       for _, source in ipairs(opts.sources) do
         if source.name == "buffer" then
           source.option = source.option or {}
@@ -16,12 +30,17 @@ return {
         end
       end
 
-      cmp.setup.filetype("tex", {
-        sources = cmp.config.sources {
-          { name = "vimtex" },
-          { name = "buffer", option = { keyword_pattern = [[\k\+]] } },
-        },
-      })
+      -- tab should never expand snippets!
+      local luasnip = require "luasnip"
+      opts.mapping["<Tab>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif luasnip.locally_jumpable(1) then
+          luasnip.jump(1)
+        else
+          fallback()
+        end
+      end, { "i", "s" })
     end,
   },
   -- vimtex completion
@@ -43,10 +62,10 @@ return {
   -- fix luasnip issue
   {
     "L3MON4D3/LuaSnip",
-    opts = {
-      region_check_events = "InsertEnter",
-      delete_check_events = "InsertLeave",
-    },
+    -- opts = {
+    --   region_check_events = "InsertEnter",
+    --   delete_check_events = "InsertLeave",
+    -- },
   },
 
   {
