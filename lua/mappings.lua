@@ -1,11 +1,12 @@
 require "nvchad.mappings"
 
 local map = vim.keymap.set
+local autocmd = vim.api.nvim_create_autocmd
 
 -- align in nvim
 -- example with `=`
 -- :! column -t -s= -o=
-vim.keymap.set("v", "<leader>al", function()
+map("v", "<leader>al", function()
   vim.notify("char to align on: ", vim.log.levels.INFO)
   local ok, char = pcall(vim.fn.getcharstr)
   if not ok or char == "" or char == "\n" then
@@ -90,7 +91,7 @@ vim.api.nvim_create_user_command(
 )
 
 -- Format on save, only if enabled
-vim.api.nvim_create_autocmd("BufWritePre", {
+autocmd("BufWritePre", {
   pattern = "*",
   callback = function(args)
     if vim.g.format_on_save_enabled then
@@ -127,7 +128,7 @@ map(
   { desc = "toggle markdown preview" }
 )
 
-vim.api.nvim_create_autocmd("FileType", {
+autocmd("FileType", {
   pattern = { "markdown" },
   callback = function()
     map("n", "<leader>sp", function()
