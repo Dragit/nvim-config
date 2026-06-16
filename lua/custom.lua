@@ -220,9 +220,55 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt_local.shiftwidth = 4 -- Indentation level for C files
   end,
 })
+-- ############################# C #############################################
 -- enable c syntax highlighting for header files
 vim.g.c_syntax_for_h = 1
 
+-- ########################## haskell ##########################################
+-- disable vim-matchup for haskell
+autocmd("FileType", {
+  pattern = { "haskell" },
+  callback = function()
+    vim.b.matchup_matchparen_enabled = 0
+    vim.b.loaded_matchparen = 1
+  end,
+})
+-- TEST: lazy load for ceartain files
+-- autocmd({ "BufReadPost", "BufNewFile" }, {
+--   pattern = "*",
+--   callback = function()
+--     vim.defer_fn(function()
+--       local excluded_fts = function()
+--         local current_buf = vim.api.nvim_get_current_buf()
+--         local current_filetype =
+--           vim.api.nvim_get_option_value("filetype", { buf = current_buf })
+--
+--         -- Excluded filetype
+--         -- Can either add the filetype or file extensions
+--         -- ex. 'text' or 'txt'
+--         local filetypes = {
+--           "haskell",
+--         }
+--
+--         for _, filetype in ipairs(filetypes) do -- Checks filetype
+--           if current_filetype == filetype then
+--             return true -- Skip for excluded filetypes
+--           end
+--         end
+--         return false
+--       end
+--       if excluded_fts() then
+--         print " No vim-matchup: Excluded Filetype"
+--         vim.defer_fn(function()
+--           vim.cmd 'echo ""'
+--         end, 2000)
+--       else
+--         vim.cmd "Lazy load vim-matchup"
+--         print " vim-matchup loaded"
+--       end
+--     end, 500)
+--   end,
+-- })
 -- ################### markdown/text stuff #####################################
 
 -- set indentation for markdown files
