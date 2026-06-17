@@ -15,31 +15,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- ################################ nvim/cmp ###################################
--- add custom sources here:
--- local cmp = require "cmp"
--- cmp.setup.filetype({ "sql" }, {
---   { name = "vim-dadbod-completion" },
---   { name = "buffer" },
--- })
--- Dynamically add vim-dadbod-completion for SQL files
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "sql", "mysql", "plsql" },
-  callback = function()
-    -- Load vim-dadbod-completion if not already loaded
-    pcall(require, "vim-dadbod-completion")
-
-    local cmp = require "cmp"
-    -- Update cmp sources for this buffer
-    cmp.setup.buffer {
-      sources = {
-        { name = "vim-dadbod-completion" },
-        { name = "buffer" },
-      },
-    }
-  end,
-})
-
 -- ####################### haskel-lean-treesitter-grammar ######################
 autocmd("User", {
   pattern = "TSUpdate",

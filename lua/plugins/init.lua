@@ -21,6 +21,19 @@ return {
           { name = "async_path" },
         },
       })
+
+      cmp.setup.filetype("sql", {
+        sources = {
+          { name = "vim-dadbod-completion" },
+          { name = "buffer", option = { keyword_pattern = [[\k\+]] } },
+          --- old sources
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "nvim_lua" },
+          { name = "async_path" },
+        },
+      })
       -- autocomplete unicode
       for _, source in ipairs(opts.sources) do
         if source.name == "buffer" then
@@ -29,7 +42,6 @@ return {
           source.option.keyword_pattern = [[\k\+]]
         end
       end
-
       -- tab should never expand snippets!
       local luasnip = require "luasnip"
       opts.mapping["<Tab>"] = cmp.mapping(function(fallback)
