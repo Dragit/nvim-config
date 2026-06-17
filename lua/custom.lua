@@ -44,6 +44,12 @@ vim.api.nvim_create_autocmd("FileType", {
 autocmd("User", {
   pattern = "TSUpdate",
   callback = function()
+    require("nvim-treesitter.parsers").haskell = {
+      install_info = {
+        url = "https://github.com/tree-sitter-grammars/tree-sitter-haskell",
+        branch = "master",
+      },
+    }
     require("nvim-treesitter.parsers").lean = {
       install_info = {
         url = "https://github.com/Julian/tree-sitter-lean",
@@ -57,12 +63,6 @@ autocmd("User", {
         -- queries = 'queries/neovim', -- also install queries from given directory
       },
       tier = 2,
-    }
-    require("nvim-treesitter.parsers").haskell = {
-      install_info = {
-        url = "https://github.com/tree-sitter-grammars/tree-sitter-haskell",
-        revision = "98aedbd2d6947a168ba3ba3755d70b0cb6b78395", -- the strict-aliasing fix
-      },
     }
   end,
 })

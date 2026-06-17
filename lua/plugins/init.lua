@@ -225,7 +225,7 @@ return {
         "vimdoc",
         "html",
         "css",
-        -- "haskell", -- this haskell grammar is broken
+        "haskell", -- this will install from my custom url
         "python",
         "java",
         "markdown",
@@ -251,7 +251,7 @@ return {
         "xml",
         "regex",
         "regex",
-        "lean",
+        "lean", -- this uses custom url
       },
     },
   },
