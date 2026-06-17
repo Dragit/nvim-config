@@ -225,7 +225,7 @@ return {
         "vimdoc",
         "html",
         "css",
-        "haskell",
+        -- "haskell", -- this haskell grammar is broken
         "python",
         "java",
         "markdown",

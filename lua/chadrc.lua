@@ -37,7 +37,7 @@ M.mason = {
     "html-lsp",
     "css-lsp",
     "prettier",
-    "haskell-language-server",
+    -- "haskell-language-server", -- disable for now, I have my own hls install
     "jdtls",
     "yamllint",
     "marksman",
