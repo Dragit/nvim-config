@@ -121,7 +121,7 @@ end
 -- especially setup config
 vim.lsp.config("java", {})
 -- setup jdtls properly
-vim.api.nvim_create_autocmd("Filetype", {
+vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
   callback = function()
     require("jdtls.config_setup"):setup()
