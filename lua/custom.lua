@@ -100,11 +100,6 @@ end
 autocmd("BufWinEnter", {
   group = folds,
   callback = function()
-    if vim.wo.diff then
-      return
-    end
-    set_folds()
-    vim.cmd "silent! loadview"
     local line = vim.fn.line "'\""
     if
       line > 1
@@ -112,6 +107,14 @@ autocmd("BufWinEnter", {
       and vim.bo.filetype ~= "gitcommit"
       and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
     then
+      vim.schedule(function()
+        if vim.wo.diff then
+          vim.cmd "normal! gg"
+          return
+        end
+      end)
+      set_folds()
+      vim.cmd "silent! loadview"
       vim.cmd 'normal! g`"'
     end
   end,
