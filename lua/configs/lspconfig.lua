@@ -110,13 +110,14 @@ for name, opts in pairs(servers) do
   vim.lsp.enable(name)
 end
 
+-- Remove to see how I like it
 -- fix border of lsp
-local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
-function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
-  opts = opts or {}
-  opts.border = "rounded"
-  return orig_util_open_floating_preview(contents, syntax, opts, ...)
-end
+-- local orig_util_open_floating_preview = vim.lsp.util.open_floating_preview
+-- function vim.lsp.util.open_floating_preview(contents, syntax, opts, ...)
+--   opts = opts or {}
+--   opts.border = "rounded"
+--   return orig_util_open_floating_preview(contents, syntax, opts, ...)
+-- end
 
 -- especially setup config
 vim.lsp.config("java", {})
@@ -125,5 +126,26 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "java",
   callback = function()
     require("jdtls.config_setup"):setup()
+  end,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+    -- rest of your attach handler
+
+    if client and client:supports_method "textDocument/documentHighlight" then
+      vim.api.nvim_create_autocmd("CursorHold", {
+        callback = vim.lsp.buf.document_highlight,
+        buffer = args.buf,
+        desc = "Show document highlight on cursor hold.",
+      })
+      vim.api.nvim_create_autocmd("CursorMoved", {
+        callback = vim.lsp.buf.clear_references,
+        buffer = args.buf,
+        desc = "Clear highlights when the cursor moves.",
+      })
+    end
   end,
 })

@@ -13,5 +13,6 @@ o.relativenumber = true
 -- o.colorcolumn = "80" -- create line at position 80 --handled in custom
 o.tabstop = 4
 o.shiftwidth = 4
+o.updatetime = 2000 -- updatetime for lsp documenthover
 
 o.conceallevel = 0 -- conceal markdwon formatting
