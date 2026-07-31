@@ -14,5 +14,6 @@ o.relativenumber = true
 o.tabstop = 4
 o.shiftwidth = 4
 o.updatetime = 2000 -- updatetime for lsp documenthover
+o.winborder = "rounded"
 
 o.conceallevel = 0 -- conceal markdwon formatting
