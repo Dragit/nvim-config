@@ -40,8 +40,7 @@ map(
   { desc = "lsp floating diagnostics" }
 )
 
--- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
---
+--  map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")
 
 -- inlay hints toggle
 map("n", "<leader>ih", function()
@@ -58,6 +57,14 @@ map("n", "<leader>ca", function()
   vim.lsp.buf.code_action()
 end, {
   desc = "LSP Code Action",
+  noremap = true,
+  silent = true,
+})
+
+map("n", "<leader>qa", function()
+  vim.diagnostic.setqflist()
+end, {
+  desc = "Add all diagnostics to the quickfix list.",
   noremap = true,
   silent = true,
 })
@@ -158,6 +165,23 @@ autocmd("FileType", {
   end,
 })
 
+-- ###################### lean ################################################
+autocmd("FileType", {
+  pattern = { "lean" },
+  callback = function(args)
+    map("n", "<localleader>ts", function()
+      if vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()] then
+        vim.treesitter.stop()
+      else
+        vim.treesitter.start()
+      end
+    end, {
+      desc = "toggle lean treesitter",
+      noremap = true,
+    })
+  end,
+})
+
 -- ###################### SQL ##################################################
 -- not entirely sql specific but created for sql use
 -- Send a single line to the terminal
@@ -208,3 +232,17 @@ end, {
   desc = "Send visual selection terminal",
   noremap = true,
 })
+
+-- ###################### matchup ##############################
+map(
+  "n",
+  "dm%",
+  "<plug>(matchup-ds%)",
+  { silent = true, remap = true, desc = "matchup delete surround" }
+)
+map(
+  "n",
+  "cm%",
+  "<plug>(matchup-cs%)",
+  { silent = true, remap = true, desc = "matchup chance surround" }
+)

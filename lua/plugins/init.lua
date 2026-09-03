@@ -97,18 +97,22 @@ return {
   {
     "andymass/vim-matchup",
     lazy = false,
-    -- init = function()
-    --   -- modify your configuration vars here
-    --   vim.g.matchup_treesitter_stopline = 500
-    --
-    --   -- or call the setup function provided as a helper. It defines the
-    --   -- configuration vars for you
-    --   require('match-up').setup({
-    --     treesitter = {
-    --       stopline = 500
-    --     }
-    --   })
-    -- end,
+    dependencies = {
+      "kylechui/nvim-surround",
+    },
+    init = function()
+      -- modify your configuration vars here
+      -- vim.g.matchup_treesitter_stopline = 500
+      vim.g.matchup_surround_enabled = 1
+
+      -- -- or call the setup function provided as a helper. It defines the
+      -- -- configuration vars for you
+      -- require("match-up").setup {
+      --   treesitter = {
+      --     stopline = 500,
+      --   },
+      -- }
+    end,
     -- or use the `opts` mechanism built into `lazy.nvim`. It calls
     -- `require('match-up').setup` under the hood
     ---@type matchup.Config
@@ -117,10 +121,18 @@ return {
         stopline = 500,
       },
       matchparen = {
+        deferred = 1,
+        deferred_show_delay = 50, -- default
+        deferred_hide_delay = 700, -- default
+        -- NOTE: should be ok for now, issue was really markview
+        -- nomode = "i", -- disable in insert mode for better performance
         offscreen = {
           method = "popup",
           scrolloff = 1,
         },
+      },
+      surround = {
+        enabled = 1,
       },
     },
   },
@@ -183,7 +195,12 @@ return {
         { path = "${3rd}/luv/library", words = { "vim%.uv" } },
         -- Load plugin types when the `vim.uv` word is found
         { path = "$HOME/.local/share/nvim/lazy", words = { "vim%.uv" } },
-      },
+        { path = "LazyVim", words = { "LazyVim" } },
+      }, ---@type lazydev.Library.spec[]
+      -- disable when a .luarc.json file is found
+      enabled = function(root_dir)
+        return not vim.uv.fs_stat(root_dir .. "/.luarc.json")
+      end,
     },
   },
   -- #######################################################################
@@ -237,7 +254,7 @@ return {
         "vimdoc",
         "html",
         "css",
-        "haskell", -- this will install from my custom url
+        "haskell",
         "python",
         "java",
         "markdown",
@@ -267,7 +284,6 @@ return {
       },
     },
   },
-  -- add config for nvim-tree
   {
     "nvim-tree/nvim-tree.lua",
     opts = function()

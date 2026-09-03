@@ -1,7 +1,14 @@
 local autocmd = vim.api.nvim_create_autocmd
 local map = vim.keymap.set
+
+-- autopairs
+local Rule = require "nvim-autopairs.rule"
+local npairs = require "nvim-autopairs"
+local cond = require "nvim-autopairs.conds"
+local ts_conds = require "nvim-autopairs.ts-conds"
+
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "*" }, -- Hier wird die colorcolumn aktiviert
+  pattern = { "*" },
   callback = function()
     vim.opt.colorcolumn = "80"
   end,
@@ -9,33 +16,68 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- Deaktiviere die colorcolumn für bestimmte Dateitypen
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "markdown", "html", "text", "tex", "nvdash", "man" }, -- Hier wird die colorcolumn deaktiviert
+  pattern = { "markdown", "html", "text", "tex", "nvdash", "man" },
   callback = function()
     vim.opt.colorcolumn = "" -- Deaktiviert die colorcolumn
   end,
 })
 
+-- Make diagnostics underline red
+vim.api.nvim_set_hl(
+  0,
+  "DiagnosticUnderlineError",
+  { underline = true, sp = "#ff6b5a" }
+)
+
+vim.api.nvim_set_hl(
+  0,
+  "DiagnosticUnderlineWarn",
+  { underline = true, sp = "#ECBE7B" }
+)
+vim.api.nvim_set_hl(
+  0,
+  "DiagnosticUnderlineInfo",
+  { underline = true, sp = "#46D9FF" }
+)
+vim.api.nvim_set_hl(
+  0,
+  "DiagnosticUnderlineHint",
+  { underline = true, sp = "#98be65" }
+)
 -- ####################### haskel-lean-treesitter-grammar ######################
+vim.api.nvim_create_user_command("AddLeanDocHighlight", function()
+  local path = vim.fn.stdpath "data" .. "/site/queries/lean/injections.scm"
+  vim.fn.mkdir(vim.fn.fnamemodify(path, ":h"), "p")
+  local f = io.open(path, "w")
+  if f then
+    f:write '((block_comment) @injection.content\n  (#set! injection.language "markdown"))\n'
+    f:close()
+    print("Written: " .. path)
+  else
+    print("FAILED: " .. path)
+  end
+end, {})
+
 autocmd("User", {
   pattern = "TSUpdate",
   callback = function()
-    require("nvim-treesitter.parsers").haskell = {
-      install_info = {
-        url = "https://github.com/tree-sitter-grammars/tree-sitter-haskell",
-        branch = "master",
-      },
-    }
+    -- require("nvim-treesitter.parsers").haskell = {
+    --   install_info = {
+    --     url = "https://github.com/tree-sitter-grammars/tree-sitter-haskell",
+    --     branch = "master",
+    --   },
+    -- }
     require("nvim-treesitter.parsers").lean = {
       install_info = {
         url = "https://github.com/Julian/tree-sitter-lean",
-        queries = "queries",
+        queries = "queries", -- also install queries from given directory
         -- revision = "", -- commit hash for revision to check out; HEAD if missing
         -- optional entries:
         -- branch = 'develop', -- only needed if different from default branch
         -- location = 'parser', -- only needed if the parser is in subdirectory of a "monorepo"
         -- generate = true, -- only needed if repo does not contain pre-generated `src/parser.c`
         -- generate_from_json = false, -- only needed if repo does not contain `src/grammar.json` either
-        -- queries = 'queries/neovim', -- also install queries from given directory
+        -- queries = 'queries/neovim',
       },
       tier = 2,
     }
@@ -195,13 +237,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- ################################ lean ######################################
+npairs.add_rule(Rule("/-", "-/", "lean"))
+
 -- ########################## make #############################################
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "make" }, -- Dateitypen bei denen ich 4 Indents will
   callback = function()
     vim.opt_local.expandtab = false -- why gnu make, tab bad
-    vim.opt_local.tabstop = 4 -- Number of spaces for a Tab in C files
-    vim.opt_local.shiftwidth = 4 -- Indentation level for C files
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
   end,
 })
 -- ############################# C #############################################
@@ -255,13 +300,37 @@ autocmd("FileType", {
 -- })
 -- ################### markdown/text stuff #####################################
 
+-- NOTE: not rules must be first
+npairs.add_rules {
+  Rule("$", "$", { "tex", "markdown" })
+    :with_pair(cond.not_after_regex("[%p%c%a]", 1))
+    :with_pair(ts_conds.is_not_ts_node {
+      "string",
+      "comment",
+      "block_comment",
+      "code_span",
+      "fenced_code_block",
+      "expression",
+      "declarations",
+    })
+    :with_pair(cond.after_regex("$", 1)),
+  Rule("*", "**", { "markdown" })
+    :with_pair(cond.not_before_text "**")
+    :with_pair(cond.not_after_regex("[%w]", 1))
+    :with_pair(cond.not_before_regex("%w%*", 2))
+    :with_pair(cond.before_text "*"),
+  Rule("*", "*", { "markdown" })
+    :with_pair(cond.not_after_regex("[%w]", 1))
+    :with_pair(cond.before_text "**"),
+}
+
 -- set indentation for markdown files
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
     vim.opt_local.tabstop = 2
     vim.opt_local.shiftwidth = 2
-    vim.keymap.set("i", "$", "$$<Left>", { buffer = true })
+    -- vim.keymap.set("i", "$", "$$<Left>", { buffer = true })
   end,
 })
 
@@ -346,14 +415,13 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   end,
 })
 
--- ############### end markdown/text stuff #####################################
+-- ############### end markdown/text stuff ####################################
 
+-- ############### Genereal ###################################################
 -- hide terminal padding
-
 autocmd("VimEnter", {
   command = ":silent !kitty @ set-spacing padding=0 margin=0",
 })
-
 autocmd("VimLeavePre", {
   command = ":silent !kitty @ set-spacing padding=20 margin=10",
 })
