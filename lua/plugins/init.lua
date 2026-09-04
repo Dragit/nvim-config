@@ -137,30 +137,184 @@ return {
     },
   },
 
-  -- ############################ Java #####################################
+  -- ##################### neovim qality of life ##############################
+
+  -- {
+  --   "folke/snacks.nvim",
+  --   priority = 1000,
+  --   lazy = false,
+  --   -- ---@type snacks.Config
+  --   -- opts = {
+  --   --   -- your configuration comes here
+  --   --   -- or leave it empty to use the default settings
+  --   --   -- refer to the configuration section below
+  --   --   -- bigfile = { enabled = true },
+  --   --   -- dashboard = { enabled = true },
+  --   --   -- explorer = { enabled = true },
+  --   --   -- indent = { enabled = true },
+  --   --   -- input = { enabled = true },
+  --   --   -- picker = { enabled = true },
+  --   --   -- notifier = { enabled = true },
+  --   --   -- quickfile = { enabled = true },
+  --   --   -- scope = { enabled = true },
+  --   --   -- scroll = { enabled = true },
+  --   --   -- statuscolumn = { enabled = true },
+  --   --   -- words = { enabled = true },
+  --   -- },
+  --   ------------ toggle for profiling -----------------------
+  --   -- -- Somehow broken right now!
+  --   -- opts = function()
+  --   --   -- Toggle the profiler
+  --   --   Snacks.toggle.profiler():map "<leader>pp"
+  --   --   -- Toggle the profiler highlights
+  --   --   Snacks.toggle.profiler_highlights():map "<leader>ph"
+  --   -- end,
+  --   -- keys = {
+  --   --   {
+  --   --     "<leader>ps",
+  --   --     function()
+  --   --       Snacks.profiler.scratch()
+  --   --     end,
+  --   --     desc = "Profiler Scratch Bufer",
+  --   --   },
+  --   -- },
+  --   ---------------------------------------------------------
+  -- },
+
+  -- ########################## Python ########################################
+  {
+    "mfussenegger/nvim-dap-python",
+    dependencies = {
+      "nvim-dap",
+    },
+  },
+  -- ############################ Java ########################################
   {
     "mfussenegger/nvim-jdtls",
     dependencies = {
-      -- "nvim-dap",
+      "nvim-dap",
     },
   },
-  -- {
-  --   "mfussenegger/nvim-dap",
-  --   dependencies = {
-  --     "rcarriga/nvim-dap-ui",
-  --     -- virtual text for the debugger
-  --     {
-  --       "theHamsta/nvim-dap-virtual-text",
-  --       opts = {},
-  --     },
-  --   },
-  -- },
-  -- {
-  --   "rcarriga/nvim-dap-ui",
-  -- },
-  -- {
-  --   "theHamsta/nvim-dap-virtual-text",
-  -- },
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      -- {
+      --   "igorlfs/nvim-dap-view",
+      --   dependencies = { "mfussenegger/nvim-dap" },
+      --   -- config = function()
+      -- },
+      {
+        "theHamsta/nvim-dap-virtual-text",
+      },
+    },
+    config = function()
+      local dap = require "dap"
+      local code_win
+      local function make_terminal_view(config)
+        local term_buf = vim.api.nvim_create_buf(false, true)
+        code_win = vim.api.nvim_get_current_win()
+        vim.cmd "split"
+        vim.cmd "horizontal resize 25"
+        local term_win = vim.api.nvim_get_current_win()
+        vim.api.nvim_win_set_buf(term_win, term_buf)
+        -- dap.repl.open({}, "vertical split")
+        local widgets = require "dap.ui.widgets"
+        local width = vim.api.nvim_win_get_width(term_win) - 2
+        local scopes_w = math.floor(width * 0.4)
+        local frames_w = math.floor(width * 0.25)
+
+        vim.notify("window width: " .. width .. " cols")
+        widgets
+          .sidebar(widgets.frames, { width = frames_w }, "vertical split")
+          .open()
+        vim.api.nvim_set_current_win(term_win)
+        widgets
+          .sidebar(widgets.scopes, { width = scopes_w, wrap = false }, "vertical split")
+          .open()
+        vim.api.nvim_set_current_win(code_win)
+        return term_buf, term_win
+      end
+      dap.defaults.fallback.terminal_win_cmd = make_terminal_view
+      dap.defaults.fallback.switchbuf = function(bufnr, line, column)
+        if not vim.api.nvim_win_is_valid(code_win) then
+          return -- fall back to default
+        end
+        vim.api.nvim_win_set_buf(code_win, bufnr)
+        vim.api.nvim_win_set_cursor(code_win, { line, column })
+        vim.api.nvim_set_current_win(code_win)
+      end
+
+      vim.cmd "hi DapColor guifg=#ecbe7b"
+      vim.fn.sign_define(
+        "DapBreakpoint",
+        { text = "", texthl = "DapColor", linehl = "", numhl = "" }
+      )
+      vim.fn.sign_define(
+        "DapStopped",
+        { text = "→", texthl = "DapColor", linehl = "", numhl = "" }
+      )
+      vim.fn.sign_define(
+        "DapBreakpointCondition",
+        { text = "C", texthl = "DapColor", linehl = "", numhl = "" }
+      )
+      vim.fn.sign_define(
+        "DapLogPoint",
+        { text = "L", texthl = "DapColor", linehl = "", numhl = "" }
+      )
+      vim.fn.sign_define(
+        "DapBreakpointRejected",
+        { text = "R", texthl = "DapColor", linehl = "", numhl = "" }
+      )
+      local map = vim.keymap.set
+      map("n", "<F5>", function()
+        dap.continue()
+      end, { desc = "dap continue" })
+      map("n", "<F10>", function()
+        dap.step_over()
+      end, { desc = "dap step over" })
+      map("n", "<F11>", function()
+        dap.step_into()
+      end, { desc = "dap step into" })
+      map("n", "<F12>", function()
+        dap.step_out()
+      end, { desc = "dap step out" })
+      map("n", "<localleader>b", function()
+        dap.toggle_breakpoint()
+      end, { desc = "dap toggle breakpoint" })
+      map("n", "<localleader>B", function()
+        dap.set_breakpoint()
+      end, { desc = "dap set breakpoint" })
+
+      map("n", "<localleader>lp", function()
+        dap.set_breakpoint(nil, nil, vim.fn.input "Log point message: ")
+      end, { desc = "dap set log point" })
+
+      map("n", "<localleader>dr", function()
+        dap.repl.open({}, "split")
+      end, { desc = "dap open repl" })
+      map("n", "<localleader>dl", function()
+        dap.run_last()
+      end, { desc = "dap run last" })
+
+      map({ "n", "v" }, "<localleader>dh", function()
+        require("dap.ui.widgets").hover()
+      end, { desc = "dap hover" })
+
+      map({ "n", "v" }, "<localleader>dp", function()
+        require("dap.ui.widgets").preview()
+      end, { desc = "dap preview" })
+
+      map("n", "<localleader>df", function()
+        local widgets = require "dap.ui.widgets"
+        widgets.centered_float(widgets.frames)
+      end, { desc = "dap frames" })
+
+      map("n", "<localleader>ds", function()
+        local widgets = require "dap.ui.widgets"
+        widgets.centered_float(widgets.scopes)
+      end, { desc = "dap scopes" })
+    end,
+  },
   -- #######################################################################
 
   -- ############################ Lean #####################################

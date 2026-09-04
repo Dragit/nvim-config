@@ -44,6 +44,14 @@ vim.api.nvim_set_hl(
   "DiagnosticUnderlineHint",
   { underline = true, sp = "#98be65" }
 )
+
+-- ############################### python ######################################
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function()
+    require("configs.python"):setup()
+  end,
+})
 -- ####################### haskel-lean-treesitter-grammar ######################
 vim.api.nvim_create_user_command("AddLeanDocHighlight", function()
   local path = vim.fn.stdpath "data" .. "/site/queries/lean/injections.scm"

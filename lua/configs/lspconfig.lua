@@ -36,7 +36,120 @@ local servers = {
   jsonls = {},
   eslint = {},
   stylelint_lsp = {},
-  pylsp = {},
+  -- zuban = {
+  --   -- on_init = function(client, _)
+  --   --   if client:supports_method "hoverProvider" then
+  --   --     client.server_capabilities.hoverProvider = false
+  --   --   end
+  --   -- end,
+  --   init_options = {
+  --     diagnosticMode = "workspace",
+  --     -- typeCheckingMode = "mypy",
+  --   },
+  -- },
+  -- just used for Autoimports
+  basedpyright = {
+    settings = {
+      basedpyright = {
+        analysis = {
+          -- reportPrivateLocalImportUsage = false,
+          -- typeCheckingMode = "standard", -- this will remove most warnings
+          -- autoImportCompletions = true,
+        },
+        -- disableTaggedHints = true,
+      },
+    },
+  },
+  --   on_init = function(client, _)
+  --     -- if client:supports_method "hoverProvider" then
+  --     --   client.server_capabilities.hoverProvider = false
+  --     -- end
+  --     if client:supports_method "declarationProvider" then
+  --       client.server_capabilities.declarationProvider = false
+  --     end
+  --     if client:supports_method "definitionProvider" then
+  --       client.server_capabilities.definitionProvider = false
+  --     end
+  --     if client:supports_method "documentHighlightProvider" then
+  --       client.server_capabilities.documentHighlightProvider = false
+  --     end
+  --     if client:supports_method "documentOnTypeFormattingProvider" then
+  --       client.server_capabilities.documentOnTypeFormattingProvider = false
+  --     end
+  --     if client:supports_method "documentSymbolProvider" then
+  --       client.server_capabilities.documentSymbolProvider = false
+  --     end
+  --     if client:supports_method "executeCommandProvider" then
+  --       client.server_capabilities.executeCommandProvider = false
+  --     end
+  --     if client:supports_method "implementationProvider" then
+  --       client.server_capabilities.implementationProvider = false
+  --     end
+  --     if client:supports_method "inlayHintProvider" then
+  --       client.server_capabilities.inlayHintProvider = false
+  --     end
+  --     if client:supports_method "referencesProvider" then
+  --       client.server_capabilities.referencesProvider = false
+  --     end
+  --     if client:supports_method "renameProvider" then
+  --       client.server_capabilities.renameProvider = false
+  --     end
+  --     if client:supports_method "signatureHelpProvider" then
+  --       client.server_capabilities.signatureHelpProvider = false
+  --     end
+  --     if client:supports_method "typeDefinitionProvider" then
+  --       client.server_capabilities.typeDefinitionProvider = false
+  --     end
+  --     if client:supports_method "workspaceSymbolProvider" then
+  --       client.server_capabilities.workspaceSymbolProvider = false
+  --     end
+  --   end,
+  -- },
+  -- pyright = {
+  --   python = {
+  --     analysis = {
+  --       autoSearchPaths = true,
+  --       diagnosticMode = "openFilesOnly",
+  --       useLibraryCodeForTypes = true,
+  --     },
+  --   },
+  -- },
+  -- just for better docs!
+  -- jedi_language_server = {
+  --   init_options = {
+  --     diagnostics = { enable = false },
+  --     hover = { enable = true },
+  --   },
+  --   on_init = function(client, _)
+  --     if client:supports_method "completionProvider" then
+  --       client.server_capabilities.completionProvider = false
+  --     end
+  --     if client:supports_method "definitionProvider" then
+  --       client.server_capabilities.definitionProvider = false
+  --     end
+  --   end,
+  -- },
+  -- pylsp = {
+  --   settings = {
+  --     pylsp = {
+  --       plugins = {
+  --         -- linter options
+  --         pylint = { enabled = false, executable = "pylint" },
+  --         pycodestyle = {
+  --           enabled = false,
+  --           -- ignore = { "E231", "E501" },
+  --         },
+  --         pyflakes = { enabled = false },
+  --         -- type checker
+  --         pylsp_mypy = { enabled = true },
+  --         -- auto-completion options
+  --         jedi_completion = { fuzzy = true },
+  --         -- import sorting
+  --         -- pyls_isort = { enabled = true },
+  --       },
+  --     },
+  --   },
+  -- },
   clangd = {
     cmd = {
       "clangd",
@@ -129,11 +242,36 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+local function dedupe_qflist()
+  local function dedupe(list)
+    local seen, new = {}, {}
+    for _, item in ipairs(list.items) do
+      local key = table.concat({
+        tostring(item.bufnr or 0),
+        tostring(item.lnum or 0),
+        tostring(item.col or 0),
+        item.text or "",
+      }, "¦")
+      if not seen[key] then
+        seen[key] = true
+        table.insert(new, item)
+      end
+    end
+    vim.fn.setqflist({}, "r", { title = list.title, items = new })
+  end
+
+  vim.fn.setqflist({}, "r") -- clear qf-list so it is empty
+  vim.wait(2000, function()
+    return #vim.fn.getqflist() > 0
+  end, 50)
+  dedupe(vim.fn.getqflist { items = 1, title = 1 })
+end
+
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-    -- rest of your attach handler
+    local bufnr = args.buf
+    local map = vim.keymap.set
 
     if client and client:supports_method "textDocument/documentHighlight" then
       vim.api.nvim_create_autocmd("CursorHold", {
@@ -145,6 +283,39 @@ vim.api.nvim_create_autocmd("LspAttach", {
         callback = vim.lsp.buf.clear_references,
         buffer = args.buf,
         desc = "Clear highlights when the cursor moves.",
+      })
+    end
+    if client and client:supports_method "callHierarchy/outgoingCalls" then
+      map("n", "<leader>qo", function()
+        vim.lsp.buf.outgoing_calls()
+        dedupe_qflist()
+      end, {
+        buffer = bufnr,
+        desc = "outgoing calls in quickfix list.",
+        noremap = true,
+        silent = true,
+      })
+    end
+
+    if client and client:supports_method "callHierarchy/incomingCalls" then
+      map("n", "<leader>qi", function()
+        vim.lsp.buf.incoming_calls()
+        dedupe_qflist()
+      end, {
+        buffer = bufnr,
+        desc = "incoming calls in quickfix list.",
+        noremap = true,
+        silent = true,
+      })
+    end
+    if client and client:supports_method "textDocument/references" then
+      map("n", "<leader>qr", function()
+        vim.lsp.buf.references()
+      end, {
+        buffer = bufnr,
+        desc = "references in quickfix list.",
+        noremap = true,
+        silent = true,
       })
     end
   end,

@@ -10,7 +10,7 @@ local options = {
     sql = { lsp_format = "fallback" },
     typescript = { "prettier" },
     typescriptreact = { "prettier" },
-    -- add more types if needed
+    python = { "ruff_format" },
   },
 
   -- format_on_save = {

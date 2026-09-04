@@ -48,10 +48,13 @@ M.mason = {
     "typescript-language-server",
     "alex",
     "clangd",
-    "python-lsp-server",
+    "zuban",
+    "jedi-language-server",
+    "ruff",
     "sqls",
     -- "java-test", -- nvim-dap for java
-    -- "java-debug-adapter", -- nvim-dap for java
+    "java-debug-adapter", -- nvim-dap for java
+    "debugpy",
     --  markdownlint
   },
 }
