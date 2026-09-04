@@ -1,17 +1,15 @@
 local M = {}
 
-local mason_path = vim.fn.stdpath "data" .. "/mason/packages"
-function M:setup()
-  -- base
+local function setup_dap()
+  if vim.g.python_dap_setup_loaded then
+    return
+  end
+  local mason_path = vim.fn.stdpath "data" .. "/mason/packages"
+  vim.g.python_dap_setup_loaded = 1
   require("dap-python").setup(mason_path .. "/debugpy/venv/bin/python")
-  -- tests
   -- should be unneded
   require("dap-python").test_runner = "pytest"
   -- Ui
-  -- WARNING: currently broken in python
-  -- require("dapui").setup {
-  --   force_buffers = false,
-  -- }
   local dap = require "dap"
 
   table.insert(dap.configurations.python, {
@@ -25,8 +23,11 @@ function M:setup()
     },
     console = "integratedTerminal",
   })
+end
+
+function M:setup()
   -- virual text
-  require("nvim-dap-virtual-text").setup()
+  require("nvim-dap-virtual-text").setup {}
   -- local dap = require "dap"
   -- dap.listeners.before.launch.dapui_config = function()
   --   dap.repl.open()
@@ -44,6 +45,7 @@ function M:setup()
   map("v", "<localleader>ds", function()
     require("dap-python").debug_selection()
   end, { silent = true, buffer = true, desc = "dap-python debug selection" })
+  setup_dap()
 end
 
 return M
