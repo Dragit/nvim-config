@@ -53,7 +53,7 @@ local servers = {
       basedpyright = {
         analysis = {
           -- reportPrivateLocalImportUsage = false,
-          -- typeCheckingMode = "standard", -- this will remove most warnings
+          typeCheckingMode = "standard", -- this will remove most warnings
           -- autoImportCompletions = true,
         },
         -- disableTaggedHints = true,
