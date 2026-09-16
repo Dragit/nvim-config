@@ -4,13 +4,28 @@ return {
     "hrsh7th/nvim-cmp",
     dependencies = {
       "micangl/cmp-vimtex",
+      "f3fora/cmp-spell",
     },
+    --- @type
     opts = function(_, opts)
       local cmp = require "cmp"
+      -- add function-completion
+      local spellsource = {
+        name = "spell",
+        option = {
+          keep_all_entries = false,
+          enable_in_context = function()
+            -- negation disables completion if nested inside nospell
+            return not require("cmp.config.context").in_treesitter_capture "nospell"
+          end,
+        },
+      }
+      table.insert(opts.sources, spellsource)
       -- add vimtex completion
       cmp.setup.filetype("tex", {
         sources = cmp.config.sources {
           -- new sources
+          spellsource,
           { name = "vimtex" },
           { name = "buffer", option = { keyword_pattern = [[\k\+]] } },
           --- old sources
@@ -24,6 +39,7 @@ return {
 
       cmp.setup.filetype("sql", {
         sources = {
+          spellsource,
           { name = "vim-dadbod-completion" },
           { name = "buffer", option = { keyword_pattern = [[\k\+]] } },
           --- old sources
@@ -34,7 +50,7 @@ return {
           { name = "async_path" },
         },
       })
-      -- autocomplete unicode
+      -- auto complete Unicode
       for _, source in ipairs(opts.sources) do
         if source.name == "buffer" then
           source.option = source.option or {}
@@ -42,7 +58,7 @@ return {
           source.option.keyword_pattern = [[\k\+]]
         end
       end
-      -- tab should never expand snippets!
+      -- tab should not expand snippets if no function is visible
       local luasnip = require "luasnip"
       opts.mapping["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
@@ -58,6 +74,10 @@ return {
   -- vimtex completion
   {
     "micangl/cmp-vimtex",
+  },
+  -- spellang-completion
+  {
+    "f3fora/cmp-spell",
   },
   {
     "stevearc/conform.nvim",
@@ -93,6 +113,18 @@ return {
     lazy = false,
     config = function() end,
     -- highlightgroup added in '$HOME/.config/nvim/lua/chadrc.lua'
+  },
+  {
+    "bohlender/vim-smt2",
+    lazy = false,
+  },
+  {
+    "Dragit/vim-svlib",
+    lazy = false,
+    init = function()
+      -- optional
+      vim.g.svlib_rainbow_brackets = 1
+    end,
   },
   {
     "andymass/vim-matchup",

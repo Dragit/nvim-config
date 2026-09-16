@@ -52,6 +52,19 @@ vim.api.nvim_create_autocmd("FileType", {
     require("configs.python"):setup()
   end,
 })
+
+-- ############################### svlib ######################################
+vim.g.svlib_rainbow_brackets = 1
+-- override colorify attach
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "svlib",
+  callback = function()
+    local colorify = require "nvchad.colorify"
+    colorify.attach = function()
+      -- do nothing
+    end
+  end,
+})
 -- ####################### haskel-lean-treesitter-grammar ######################
 vim.api.nvim_create_user_command("AddLeanDocHighlight", function()
   local path = vim.fn.stdpath "data" .. "/site/queries/lean/injections.scm"

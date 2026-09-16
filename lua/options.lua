@@ -17,3 +17,12 @@ o.updatetime = 2000 -- updatetime for lsp documenthover
 o.winborder = "rounded"
 
 o.conceallevel = 0 -- conceal markdwon formatting
+
+o.spell = true
+o.spelllang = "en_us"
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter" }, {
+  pattern = "",
+  callback = function()
+    vim.opt_local.spell = false
+  end,
+})
