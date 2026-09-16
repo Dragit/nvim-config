@@ -122,14 +122,6 @@ local folds = vim.api.nvim_create_augroup("folds", { clear = true })
 vim.o.foldlevel = 99
 -- empty to show text of top line!
 vim.opt.foldtext = ""
--- Save view
-autocmd("BufWritePost", {
-  group = folds,
-  callback = function()
-    vim.cmd "silent! mkview"
-  end,
-})
-
 -- Decide folding engine
 local function set_folds()
   if vim.bo.filetype == "haskell" then
@@ -163,36 +155,39 @@ end
 autocmd("BufWinEnter", {
   group = folds,
   callback = function()
-    local line = vim.fn.line "'\""
     if
-      line > 1
-      and line <= vim.fn.line "$"
-      and vim.bo.filetype ~= "gitcommit"
-      and vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) == -1
+      vim.bo.filetype == "gitcommit"
+      or vim.fn.index({ "xxd", "gitrebase" }, vim.bo.filetype) ~= -1
+      or vim.wo.diff
     then
-      vim.schedule(function()
-        if vim.wo.diff then
-          vim.cmd "normal! gg"
-          return
-        end
-      end)
-      set_folds()
-      vim.cmd "silent! loadview"
-      vim.cmd 'normal! g`"'
-    end
-  end,
-})
-
--- Re-evaluate when LSP attaches
-autocmd("LspAttach", {
-  group = folds,
-  callback = function(args)
-    if vim.wo.diff then
       return
     end
-    if args.buf == vim.api.nvim_get_current_buf() then
-      set_folds()
-    end
+
+    -- load view and jump to last cursor postion
+    set_folds()
+    vim.cmd "silent! loadview"
+    vim.cmd 'normal! g`"'
+
+    -- Re-evaluate when LSP attaches
+    autocmd("LspAttach", {
+      group = folds,
+      callback = function(args)
+        if vim.wo.diff then
+          return
+        end
+        if args.buf == vim.api.nvim_get_current_buf() then
+          set_folds()
+        end
+      end,
+    })
+
+    -- Save view
+    autocmd("BufWritePost", {
+      group = folds,
+      callback = function()
+        vim.cmd "silent! mkview"
+      end,
+    })
   end,
 })
 
